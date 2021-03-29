@@ -1,6 +1,6 @@
 const Model = require("../../infra/database/mongoRepository/usuario");
 const password_check = require("password-validator");
-const secure = require("../../libs/secure");
+const secure = require("../../util/libs/secure");
 
 async function createUser(req, res) {
   const { nome, email, senha } = req.body;
