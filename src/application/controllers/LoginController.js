@@ -1,6 +1,6 @@
 const jwt = require("../midleware/jwt");
 const bcrypt = require("bcrypt");
-const Model = require("../models/usuario");
+const Model = require("../../infra/database/mongoRepository/usuario");
 const email_check = require("email-validator");
 
 async function autentica(req, res) {

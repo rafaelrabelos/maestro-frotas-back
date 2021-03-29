@@ -22,7 +22,9 @@ npm install
 
 ### Build & Run
 
-Para buildar e rodar project das plataformas, utilize o comando:
+
+- Crie e preencha um arquivo local.env dentro de  /src/util/enviroment utilizando o arquivo sample de exemplo
+- Para buildar e rodar project das plataformas, utilize o comando:
 
 ```
 npm run start
