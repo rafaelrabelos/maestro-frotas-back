@@ -1,5 +1,5 @@
-const Model = require("../models/usuario");
-const jwt = require("../midleware/jwt");
+const Model = require("../../infra/database/mongoRepository/usuario");
+const jwt = require("../../application/midleware/jwt");
 
 async function secureRoute(req, res, validators, _next) {
   if (jwt.valideAuthJWT(req, res) === true) {
