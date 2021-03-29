@@ -1,4 +1,5 @@
 const Model = require("../../infra/database/mongoRepository/usuario");
+const UserService = require("../services/UserService");
 const password_check = require("password-validator");
 const secure = require("../../util/libs/secure");
 
@@ -27,6 +28,16 @@ async function createUser(req, res) {
     });
 
     return res.status(200).send({ status: true, data: user });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+}
+async function listUsers(req, res) {
+  
+  try {
+    const users = await UserService.ObtemUsuarios();
+    return res.status(200).send({ status: true, data: users });
   } catch (error) {
     console.log(error);
     return res.status(500).send(error);
@@ -196,6 +207,7 @@ async function selectPermissions(req) {
 module.exports = {
   createUser,
   getUsers,
+  listUsers,
   getUser,
   getSelfUser,
   updateUser,

@@ -25,6 +25,7 @@ routes.get("/", (req, res) =>
 routes.post("/login", LoginController.autentica);
 
 // Users
+routes.get("/listUsers", UserController.listUsers);
 routes.get("/user", (req, res) =>
   secure.secureRoute(req, res, null, UserController.getSelfUser)
 );
