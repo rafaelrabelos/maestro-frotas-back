@@ -1,5 +1,9 @@
 const dotenv = require("dotenv");
-dotenv.config();
+const application = require("./util/libs/application");
+const enviroment = application.getEnviroment();
+
+dotenv.config({ path: `./src/util/enviroments/${enviroment}.env` });
+console.log(`- Using ${enviroment} enviroment`);
 
 const api = require("./application/index");
 
