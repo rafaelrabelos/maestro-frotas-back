@@ -2,7 +2,7 @@ const express = require("express");
 const routes = require("./routes");
 const cors = require("cors");
 const os = require("os");
-const clearSlashMidd = require("./midleware/clearPath");
+// const clearSlashMidd = require("../midleware/clearPath");
 
 function executaAplicacao(port) {
   const hostname = os.hostname();
@@ -13,7 +13,7 @@ function executaAplicacao(port) {
   const app = express();
   app.use(cors());
   app.use(express.json());
-  //app.use(clearSlashMidd) // Pendente de fix
+  //app.use(clearSlashMidd) // TODO Pendente de fix
   app.use(path, routes);
 
   app.listen(port, () => {

@@ -1,7 +1,6 @@
-const Model = require("../models/usuario");
-const ModelPet = require("../models/pet/pet");
+const Model = require("../../infra/database/mongoRepository/usuario");
 const password_check = require("password-validator");
-const secure = require("../libs/secure");
+const secure = require("../../libs/secure");
 
 async function createUser(req, res) {
   const { nome, email, senha } = req.body;
@@ -67,19 +66,6 @@ async function getUser(req, res) {
     )
       .select(`${await selectPermissions(req)}`)
       .populate("criadoPor");
-
-    return res.status(200).send({ status: true, data: users });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send(error);
-  }
-}
-
-async function getUserPets(req, res) {
-  try {
-    const users = await ModelPet.Pet.find({
-      heroiDono: req.params.usuarioId,
-    }).populate("heroiDono");
 
     return res.status(200).send({ status: true, data: users });
   } catch (error) {
@@ -214,5 +200,4 @@ module.exports = {
   getSelfUser,
   updateUser,
   deleteUser,
-  getUserPets,
 };

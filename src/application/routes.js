@@ -1,5 +1,5 @@
 const express = require("express");
-const secure = require("./libs/secure");
+const secure = require("../libs/secure");
 const LoginController = require("./controllers/LoginController");
 const UserController = require("./controllers/UserController");
 const os = require("os");
