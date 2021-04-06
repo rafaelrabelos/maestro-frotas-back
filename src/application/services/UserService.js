@@ -1,7 +1,7 @@
-const UsuarioRepository = require("../../infra/database/repository/UsuarioRepository");
+const UsuarioRepository = require("../../infra/database/repository/UserRepository");
 
 
-async function ObtemUsuarios(){
+async function GetUsers(){
 
   var users = await UsuarioRepository.ObtemUsuarios();
 
@@ -9,4 +9,4 @@ async function ObtemUsuarios(){
 
 }
 
-module.exports = {ObtemUsuarios}
+module.exports = {GetUsers}

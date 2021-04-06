@@ -1,6 +1,6 @@
 const express = require("express");
 const secure = require("../util/libs/secure");
-const LoginController = require("./controllers/LoginController");
+const AuthController = require("./controllers/AuthController");
 const UserController = require("./controllers/UserController");
 const os = require("os");
 
@@ -22,7 +22,7 @@ routes.get("/", (req, res) =>
 );
 
 // Sessão e login
-routes.post("/login", LoginController.autentica);
+routes.post("/login", AuthController.Auth);
 
 // Users
 routes.get("/listUsers", UserController.listUsers);
