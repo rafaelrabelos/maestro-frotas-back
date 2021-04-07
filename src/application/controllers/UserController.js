@@ -33,6 +33,7 @@ async function createUser(req, res) {
     return res.status(500).send(error);
   }
 }
+
 async function getUsers(req, res) {
   
   try {
@@ -57,13 +58,10 @@ async function getSelfUser(req, res) {
 
 async function getUser(req, res) {
   try {
-    const users = await Model.User.findById(
-      req.params.usuarioId || req.decodedJWT.id
-    )
-      .select(`${await selectPermissions(req)}`)
-      .populate("criadoPor");
+    var user = await UserService.GetUserWithRolesById(req.params.usuarioId || req.decodedJWT.id);
+    const permissions = await selectPermissions(req);
 
-    return res.status(200).send({ status: true, data: users });
+    return res.status(200).send({ status: true, data: user });
   } catch (error) {
     console.log(error);
     return res.status(500).send(error);
