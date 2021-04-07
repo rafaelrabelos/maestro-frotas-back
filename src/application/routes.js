@@ -21,8 +21,9 @@ routes.get("/", (req, res) =>
   })
 );
 
-// Sessão e login
-routes.post("/login", AuthController.Auth);
+// Auth
+routes.post("/auth/login", AuthController.Auth);
+routes.post("/auth/passwordrecover", AuthController.RecoverPassword);
 
 // Users
 routes.get("/listUsers", UserController.listUsers);

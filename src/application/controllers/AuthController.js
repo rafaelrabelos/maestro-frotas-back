@@ -3,7 +3,6 @@ const AuthService = require("../services/AuthService");
 
 async function Auth(req, res) {
   const { cpf, senha } = req.body;
-
   const user = await AuthService.AutheticateUser(cpf, senha);
 
   if (!user) {
@@ -21,6 +20,25 @@ async function Auth(req, res) {
   }
 
   res.status(200).send(await MountAuthResponse(user));
+}
+
+async function RecoverPassword(req, res) {
+  const { cpf, code } = req.body;
+  const recoverRes = await AuthService.RecoverUserPassWord(cpf, code);
+
+  if (!recoverRes) {
+    return res
+      .status(500)
+      .send({ status: false, erros: [`Erro ao executar a ação.`] });
+  }
+
+  if(recoverRes.errorMessage){
+    return res
+      .status(400)
+      .send({ status: false, erros: [recoverRes.errorMessage] });
+  }
+
+  res.status(200).send({ ...recoverRes});
 }
 
 async function MountAuthResponse(user = {}) {
@@ -45,4 +63,4 @@ async function MountAuthResponse(user = {}) {
   return res;
 }
 
-module.exports = { Auth };
+module.exports = { Auth, RecoverPassword };
