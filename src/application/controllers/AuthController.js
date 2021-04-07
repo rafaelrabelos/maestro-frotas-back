@@ -4,7 +4,6 @@ const AuthService = require("../services/AuthService");
 async function Auth(req, res) {
   const { cpf, senha } = req.body;
   const user = await AuthService.AutheticateUser(cpf, senha);
-
   if (!user) {
     return res.status(500).send({
       status: false,
@@ -15,7 +14,7 @@ async function Auth(req, res) {
   if (!Array.isArray(user) && user.errorMessage) {
     return res.status(400).send({
       status: false,
-      erros: user.errorMessage,
+      erros: [user.errorMessage],
     });
   }
 
