@@ -19,6 +19,50 @@ async function GetAll() {
   return rows;
 }
 
+async function GetById(id) {
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+   SELECT 
+      u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email, 
+      u.data_nascimento,
+      u.criado_em,
+      u.criado_por
+    FROM  users AS u
+    WHERE  u.id= '${id}'`);
+
+  return rows;
+}
+
+async function GetWithRolesById(id) {
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+   SELECT 
+      u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email, 
+      u.data_nascimento,
+      u.criado_em,
+      u.criado_por,
+      IF(r.active_role, 1,0) AS active_role,
+      IF(r.root_role, 1,0) AS is_root,
+      IF(r.sys_role,  1,0) AS is_sys,
+      IF(r.user_role, 1,0) AS is_user,
+      IF(r.adm_role, 1,0) AS is_adm
+    FROM  users AS u
+    JOIN roles AS r
+      ON u.role = r.id
+    WHERE  u.id= '${id}'`);
+
+  return rows;
+}
 
 async function GetByCpf(cpf = "") {
   const db = await mysql();
@@ -122,4 +166,4 @@ async function ClearRecoverCodeByCpf(cpf){
 
 }
 
-module.exports = { GetAll, GetByCpf, GetWithRolesByCpf, GetRecoverCodeByCpf };
+module.exports = { GetAll, GetByCpf, GetById, GetWithRolesByCpf,GetWithRolesById, GetRecoverCodeByCpf };
