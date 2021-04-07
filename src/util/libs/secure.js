@@ -1,4 +1,4 @@
-const Model = require("../../infra/database/mongoRepository/usuario");
+const UserService = require("../../application/services/UserService");
 const jwt = require("../../application/midleware/jwt");
 
 async function secureRoute(req, res, validators, _next) {
@@ -26,9 +26,8 @@ async function checkUserRights(req, rights) {
   if (userId === undefined || userId === "") {
     return `Usuário não identificado.`;
   } else {
-    const user = await Model.User.findById(userId).select(
-      "+administrador +root +system_user"
-    );
+
+    const user = await UserService.GetUserWithRolesById(userId);
 
     if (rights.root != undefined && rights.root && !isRoot(req, user)) {
       return `${user.nome}<${user.email}> sem privilégios root para executar esta ação.`;
@@ -52,11 +51,11 @@ async function checkUserRights(req, rights) {
 }
 
 function isRoot(req, user) {
-  return user.root;
+  return user.is_root  === 1;
 }
 
 function isAdmin(req, user) {
-  if (isRoot(req, user) || user.administrador) {
+  if (isRoot(req, user) || user.is_adm === 1) {
     return true;
   }
 
@@ -65,8 +64,8 @@ function isAdmin(req, user) {
 
 function isUserOwner(req, user) {
   if (
-    isAdmin(req, user) ||
-    req.params.usuarioId.toString() === user._id.toString()
+    isAdmin(req, user) || (req.params && req.params.usuarioId &&
+    req.params.usuarioId.toString() === user.id.toString())
   ) {
     return true;
   }
@@ -75,7 +74,7 @@ function isUserOwner(req, user) {
 }
 
 function isUserSystem(req, user) {
-  if (isAdmin(req, user) || user.system_user) {
+  if (isAdmin(req, user) || user.is_sys  === 1) {
     return true;
   }
 
