@@ -1,6 +1,6 @@
 const express = require("express");
 const secure = require("../util/libs/secure");
-const LoginController = require("./controllers/LoginController");
+const AuthController = require("./controllers/AuthController");
 const UserController = require("./controllers/UserController");
 const os = require("os");
 
@@ -21,11 +21,11 @@ routes.get("/", (req, res) =>
   })
 );
 
-// Sessão e login
-routes.post("/login", LoginController.autentica);
+// Auth
+routes.post("/auth/login", AuthController.Auth);
+routes.post("/auth/passwordrecover", AuthController.RecoverPassword);
 
 // Users
-routes.get("/listUsers", UserController.listUsers);
 routes.get("/user", (req, res) =>
   secure.secureRoute(req, res, null, UserController.getSelfUser)
 );
