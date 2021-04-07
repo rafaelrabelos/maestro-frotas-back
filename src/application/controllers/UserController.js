@@ -46,9 +46,7 @@ async function getUsers(req, res) {
 
 async function getSelfUser(req, res) {
   try {
-    const users = await Model.User.findById(req.decodedJWT.id)
-      .select(`${await selectPermissions(req)}`)
-      .populate("criadoPor");
+    const users = await UserService.GetUserById(req.decodedJWT.id);
 
     return res.status(200).send({ status: true, data: users });
   } catch (error) {
