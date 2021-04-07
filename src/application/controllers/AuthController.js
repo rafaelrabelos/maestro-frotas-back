@@ -32,13 +32,13 @@ async function RecoverPassword(req, res) {
       .send({ status: false, erros: [`Erro ao executar a ação.`] });
   }
 
-  if(recoverRes.errorMessage){
+  if (recoverRes.errorMessage) {
     return res
       .status(400)
       .send({ status: false, erros: [recoverRes.errorMessage] });
   }
 
-  res.status(200).send({ ...recoverRes});
+  res.status(200).send({ ...recoverRes });
 }
 
 async function MountAuthResponse(user = {}) {
@@ -51,9 +51,10 @@ async function MountAuthResponse(user = {}) {
       },
       token: jwt.generateToken(
         {
+          description: "JWT Token",
           id: user.id,
-          user: user,
           type: user.type,
+          user: user,
         },
         user.is_sys == 1 ? 30 : 6400
       ),
