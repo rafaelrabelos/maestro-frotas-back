@@ -33,23 +33,11 @@ async function createUser(req, res) {
     return res.status(500).send(error);
   }
 }
-async function listUsers(req, res) {
-  
-  try {
-    const users = await UserService.ObtemUsuarios();
-    return res.status(200).send({ status: true, data: users });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send(error);
-  }
-}
 
 async function getUsers(req, res) {
+  
   try {
-    const users = await Model.User.find()
-      .select(`${await selectPermissions(req)}`)
-      .populate("criadoPor");
-
+    const users = await UserService.GetUsers();
     return res.status(200).send({ status: true, data: users });
   } catch (error) {
     console.log(error);
@@ -59,9 +47,7 @@ async function getUsers(req, res) {
 
 async function getSelfUser(req, res) {
   try {
-    const users = await Model.User.findById(req.decodedJWT.id)
-      .select(`${await selectPermissions(req)}`)
-      .populate("criadoPor");
+    const users = await UserService.GetUserById(req.decodedJWT.id);
 
     return res.status(200).send({ status: true, data: users });
   } catch (error) {
@@ -72,13 +58,10 @@ async function getSelfUser(req, res) {
 
 async function getUser(req, res) {
   try {
-    const users = await Model.User.findById(
-      req.params.usuarioId || req.decodedJWT.id
-    )
-      .select(`${await selectPermissions(req)}`)
-      .populate("criadoPor");
+    var user = await UserService.GetUserWithRolesById(req.params.usuarioId || req.decodedJWT.id);
+    const permissions = await selectPermissions(req);
 
-    return res.status(200).send({ status: true, data: users });
+    return res.status(200).send({ status: true, data: user });
   } catch (error) {
     console.log(error);
     return res.status(500).send(error);
@@ -207,7 +190,6 @@ async function selectPermissions(req) {
 module.exports = {
   createUser,
   getUsers,
-  listUsers,
   getUser,
   getSelfUser,
   updateUser,
