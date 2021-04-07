@@ -4,7 +4,17 @@ async function GetAll() {
   const db = await mysql();
 
   const [rows] = await db.query(`
-  SELECT * FROM users
+  SELECT 
+    u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email,
+      u.data_nascimento,
+      u.role AS role_id,
+      u.criado_em,
+      u.criado_por
+    FROM users u
   `);
   return rows;
 }
