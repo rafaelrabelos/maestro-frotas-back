@@ -26,7 +26,6 @@ routes.post("/auth/login", AuthController.Auth);
 routes.post("/auth/passwordrecover", AuthController.RecoverPassword);
 
 // Users
-routes.get("/listUsers", UserController.listUsers);
 routes.get("/user", (req, res) =>
   secure.secureRoute(req, res, null, UserController.getSelfUser)
 );

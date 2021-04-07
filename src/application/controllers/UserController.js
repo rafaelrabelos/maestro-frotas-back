@@ -33,23 +33,10 @@ async function createUser(req, res) {
     return res.status(500).send(error);
   }
 }
-async function listUsers(req, res) {
+async function getUsers(req, res) {
   
   try {
-    const users = await UserService.ObtemUsuarios();
-    return res.status(200).send({ status: true, data: users });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send(error);
-  }
-}
-
-async function getUsers(req, res) {
-  try {
-    const users = await Model.User.find()
-      .select(`${await selectPermissions(req)}`)
-      .populate("criadoPor");
-
+    const users = await UserService.GetUsers();
     return res.status(200).send({ status: true, data: users });
   } catch (error) {
     console.log(error);
@@ -207,7 +194,6 @@ async function selectPermissions(req) {
 module.exports = {
   createUser,
   getUsers,
-  listUsers,
   getUser,
   getSelfUser,
   updateUser,

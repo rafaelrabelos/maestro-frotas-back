@@ -3,7 +3,7 @@ const UsuarioRepository = require("../../infra/database/repository/UserRepositor
 
 async function GetUsers(){
 
-  var users = await UsuarioRepository.ObtemUsuarios();
+  var users = await UsuarioRepository.GetAll();
 
   return users;
 
