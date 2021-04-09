@@ -124,7 +124,7 @@ async function GetRecoverCodeByCpf(cpf = "", buildNew = true){
     u.nome, 
     u.email, 
     r.code, 
-    DATEDIFF(r.valid_date, r.created_at)  as dif,
+    (r.valid_date > NOW())  as code_is_valid,
     r.created_at, 
     r.valid_date 
   FROM recovery r 
