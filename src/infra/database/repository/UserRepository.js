@@ -1,4 +1,5 @@
 const { mysql } = require("../connection");
+const bcrypt = require("bcrypt");
 
 async function GetAll() {
   const db = await mysql();
@@ -117,7 +118,8 @@ async function GetRecoverCodeByCpf(cpf = "", buildNew = true){
     await generateRecoverCodeByCpf(cpf);
   }
   
-  const [rows] = await db.query(`
+  
+  const [rows] = await db.execute(`
   SELECT 
     u.nome, 
     u.email, 
@@ -136,6 +138,12 @@ async function generateRecoverCodeByCpf(cpf){
 
   const db = await mysql();
 
+  const existCpf = await UserCpfExists(cpf);
+
+  if(!existCpf){
+    return [];
+  }
+
   const [rows] = await db.query(`
   INSERT INTO recovery 
   (user_id) 
@@ -152,7 +160,7 @@ async function generateRecoverCodeByCpf(cpf){
 async function ClearRecoverCodeByCpf(cpf){
 
   const db = await mysql();
-
+  
   const [rows] = await db.query(`
   DELETE FROM 
     recovery
@@ -161,9 +169,37 @@ async function ClearRecoverCodeByCpf(cpf){
     SELECT id 
     FROM users 
     WHERE cpf = '${cpf}')`);
+    
 
   return rows;
-
 }
 
-module.exports = { GetAll, GetByCpf, GetById, GetWithRolesByCpf,GetWithRolesById, GetRecoverCodeByCpf };
+async function UpdatePasswordByCpf(cpf, pass){
+
+  pass = await bcrypt.hash(pass, 10);
+  const clear = await ClearRecoverCodeByCpf(cpf);
+
+  const db = await mysql();
+  
+  const [rows] = await db.query(`
+  UPDATE users SET senha='${pass}' WHERE cpf='${cpf}'
+  `);
+
+  return rows;
+}
+
+async function UserCpfExists(cpf =""){
+
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+    SELECT IF(
+    (SELECT COUNT(*) 
+      FROM users 
+      WHERE cpf = '${cpf}') = 1,
+    TRUE, FALSE) AS exist;`);
+
+     return rows[0].exist;
+}
+
+module.exports = { GetAll, GetByCpf, GetById, GetWithRolesByCpf,GetWithRolesById, GetRecoverCodeByCpf, UserCpfExists, UpdatePasswordByCpf };
