@@ -46,7 +46,6 @@ async function ValidateRecoveryCode(req, res) {
   
   const recoverRes = await AuthService.ValidateRecoveryCode(cpf.replace(/[^0-9]/g, ''), code);
   console.log(recoverRes)
-  console.log(req.body)
 
   if (!recoverRes) {
     return res
@@ -65,7 +64,7 @@ async function ValidateRecoveryCode(req, res) {
 
 async function SetNewPassword(req, res) {
   const { cpf, code, pass } = req.body;
-  const recoverRes = await AuthService.SetNewPassword(cpf, code, pass);
+  const recoverRes = await AuthService.SetNewPassword(cpf.replace(/[^0-9]/g, ''), code, pass);
 
   if (!recoverRes) {
     return res

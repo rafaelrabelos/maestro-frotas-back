@@ -72,11 +72,29 @@ content-type: application/json
 }
 ###
 
-POST  {{url}}/auth/passwordrecover
+POST  {{url}}/auth/recovery/send-info
+content-type: application/json
+
+{
+    "cpf": "07919048656"
+}
+###
+
+POST  {{url}}/auth/recovery/validate-code
+content-type: application/json
+
+{
+    "cpf": "079.19048656",
+    "code": "558189"
+}
+###
+
+POST  {{url}}/auth/recovery/set-password
 content-type: application/json
 
 {
     "cpf": "07919048656",
-    "code": "0079"
+    "code": "558189",
+    "pass": "123adg666"
 }
 ###

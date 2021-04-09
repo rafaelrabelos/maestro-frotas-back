@@ -177,6 +177,7 @@ async function ClearRecoverCodeByCpf(cpf){
 async function UpdatePasswordByCpf(cpf, pass){
 
   pass = await bcrypt.hash(pass, 10);
+  const clear = await ClearRecoverCodeByCpf(cpf);
 
   const db = await mysql();
   
