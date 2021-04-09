@@ -29,30 +29,6 @@ async function AutheticateUser(cpf = "", pass = "") {
   return user;
 }
 
-async function RecoverUserPassWord(cpf = "", code = "") {
-  const valideInput = await ValideRecoverInputData(cpf, code);
-  var user = null;
-
-  if (typeof valideInput === "string") {
-    return { errorMessage: validaInput };
-  }
-
-  if (await ValideRecoverCode(cpf, code)) {
-    return { status: true, valid_code: true };
-  }
-
-  user = await UserRepository.GetByCpf(cpf);
-  var userCode = await GenerateRecoverCode(cpf);
-
-  const SendStatus = await EmailService.SendRecoverEmail(userCode, userCode.code);
-
-  if (!SendStatus) {
-    return { errorMessage: "erro ao enviar email" };
-  }
-
-  return { status: true, sent_email: userCode.email, vality: userCode.valid_date };
-}
-
 async function ValideLoginUser(user = [], pass) {
   if (!user || user.length !== 1) {
     return `Dados não encontrados para o usuário informado.`;
@@ -71,6 +47,71 @@ async function ValideLoginUser(user = [], pass) {
   user.senha = undefined;
 
   return user;
+}
+
+async function SendRecoveryInfo(cpf = "") {
+  const valideInput = await ValideRecoverInputData(cpf);
+
+  if (typeof valideInput === "string") {
+    return { errorMessage: valideInput };
+  }
+  
+  var userCode = await GenerateRecoverCode(cpf);
+
+  if(userCode && userCode.code){
+    const SendStatus = await EmailService.SendRecoverEmail(userCode, userCode.code);
+
+    if (SendStatus){
+      return { status: true, sent_email: userCode.email, vality: userCode.valid_date };
+    } else{
+      return { errorMessage: "erro ao enviar email" };
+    }
+  }
+  else{
+    return { errorMessage: "erro ao gerar código" };
+  }
+  
+}
+
+async function GenerateRecoverCode(cpf) {
+  
+  userCode = await UserRepository.GetRecoverCodeByCpf(cpf);
+
+  if(Array.isArray(userCode) && userCode.length > 0){
+    userCode = userCode[0];
+    return await ValidateRecoveryCode(cpf, userCode.code) ? userCode : null;
+  }
+  return {}
+}
+
+async function ValidateRecoveryCode(cpf, code) {
+  userCode = await UserRepository.GetRecoverCodeByCpf(cpf, false);
+
+  if(Array.isArray(userCode) && userCode.length > 0){
+    userCode = userCode[0];
+  }
+
+  if (userCode.code == code) {
+    return { status: true, vality: true };
+  }
+
+  return { errorMessage: "Código não é válido." };
+}
+
+async function SetNewPassword(cpf, code, pass){
+
+  const validCode = await this.ValidateRecoveryCode(cpf, code);
+
+  if(validCode.vality && validCode.status){
+
+    user = await UserRepository.UpdatePasswordByCpf(cpf, pass);
+
+    if(user && user.affectedRows == 1){
+      return { status: true, afected: user.affectedRows, info: user.info };
+    }
+  }
+
+  return { errorMessage: "Código não é válido." };
 }
 
 async function ValideLoginInputData(cpf, senha) {
@@ -103,24 +144,4 @@ async function ValideRecoverInputData(cpf, code) {
   return true;
 }
 
-async function ValideRecoverCode(cpf, code) {
-  userCode = await UserRepository.GetRecoverCodeByCpf(cpf, false);
-
-  if (userCode == code) {
-    return true;
-  }
-
-  return false;
-}
-
-async function GenerateRecoverCode(cpf) {
-
-  userCode = await UserRepository.GetRecoverCodeByCpf(cpf);
-
-  if(Array.isArray(userCode) && userCode.length > 0){
-    userCode = userCode[0];
-    return ValideRecoverCode(cpf, userCode.code) ? userCode : null;
-  }
-}
-
-module.exports = { AutheticateUser, RecoverUserPassWord };
+module.exports = { AutheticateUser, SendRecoveryInfo, ValidateRecoveryCode, SetNewPassword };

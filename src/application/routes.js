@@ -23,7 +23,9 @@ routes.get("/", (req, res) =>
 
 // Auth
 routes.post("/auth/login", AuthController.Auth);
-routes.post("/auth/passwordrecover", AuthController.RecoverPassword);
+routes.post("/auth/recovery/send-info", AuthController.SendRecoveryInfo);
+routes.post("/auth/recovery/validate-code", AuthController.ValidateRecoveryCode);
+routes.post("/auth/recovery/set-password", AuthController.SetNewPassword);
 
 // Users
 routes.get("/user", (req, res) =>
