@@ -92,11 +92,11 @@ async function ValidateRecoveryCode(cpf, code) {
     userCode = userCode[0];
   }
 
-  if (userCode.code == code) {
+  if (userCode.code == code && userCode.code_is_valid == 1) {
     return { status: true, vality: true };
   }
 
-  return { errorMessage: "Código não é válido." };
+  return { errorMessage: "O código informado é inválido ou expirou." };
 }
 
 async function SetNewPassword(cpf, code, pass){
