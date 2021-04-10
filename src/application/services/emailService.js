@@ -23,7 +23,7 @@ async function SendRecoverEmail(user, code) {
     body: "",
   }
 
-  message.body = `Olá, <b>${message.to.name}</b>!${message.to.name}<br/><br/>
+  message.body = `Olá, <b>${message.to.name}</b>,<br/><br/>
   <p>${message.message}</P>
   <br/><br/>
   <p><b>${code}</b></P>

@@ -12,7 +12,7 @@ async function AutheticateUser(cpf = "", pass = "") {
     return { errorMessage: valideInput };
   }
 
-  user = await UserRepository.GetWithRolesByCpf(cpf);
+  user = await UserRepository.GetWithRolesByCpf(cpf.replace(/[^0-9]/g, ''));
   user = await ValideLoginUser(user, pass);
 
   if (typeof user === "string") {

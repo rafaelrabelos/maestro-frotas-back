@@ -17,7 +17,7 @@ async function GetUserById(id){
 
 async function CpfOrEmailExists(cpf, email){
 
-  var exists = await UsuarioRepository.UserCpfOrEmailExists(cpf, email);
+  var exists = await UsuarioRepository.UserCpfOrEmailExists(cpf.replace(/[^0-9]/g, ''), email);
 
   return(exists == 1);
 }
