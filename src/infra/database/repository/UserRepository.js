@@ -84,6 +84,25 @@ async function GetByCpf(cpf = "") {
   return rows;
 }
 
+async function GetByCpfOrEmail(cpf = "", email = "") {
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+   SELECT 
+      u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email, 
+      u.data_nascimento,
+      u.criado_em,
+      u.criado_por
+    FROM  users AS u
+    WHERE  u.cpf = '${cpf}' OR u.email = '${email}'`);
+
+  return rows;
+}
+
 async function GetWithRolesByCpf(cpf = "") {
   const db = await mysql();
 
@@ -130,6 +149,53 @@ async function GetRecoverCodeByCpf(cpf = "", buildNew = true){
   FROM recovery r 
   JOIN users u ON u.id = r.user_id 
   WHERE  u.cpf = '${cpf}'`);
+
+  return rows;
+}
+
+async function GetUserRoleId(){
+
+  const db = await mysql();
+
+  const [rows] = await db.execute(`
+  SELECT id 
+    FROM roles 
+    WHERE user_role = 1 
+    AND active_role = 1 
+    AND adm_role = 0 
+    AND adm_role = 0 
+    AND sys_role = 0
+    AND root_role = 0
+    LIMIT 1;`)
+
+    return rows[0].id;
+}
+
+async function InsertUser({cpf, nome, email, senha, criadoPor}){
+
+  const db = await mysql();
+  var roleId = await GetUserRoleId();
+
+  const [rows] = await db.execute(`
+  INSERT INTO users
+  (
+    nome, 
+    sobrenome, 
+    cpf, 
+    senha, 
+    role, 
+    criado_por, 
+    email)
+  VALUES
+  (
+    '${nome}', 
+    '', 
+    '${cpf}', 
+    '${senha}', 
+    ${roleId}, 
+    ${criadoPor}, 
+    '${email}');
+  `);
 
   return rows;
 }
@@ -202,4 +268,29 @@ async function UserCpfExists(cpf =""){
      return rows[0].exist;
 }
 
-module.exports = { GetAll, GetByCpf, GetById, GetWithRolesByCpf,GetWithRolesById, GetRecoverCodeByCpf, UserCpfExists, UpdatePasswordByCpf };
+async function UserCpfOrEmailExists(cpf ="", email = ""){
+
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+    SELECT IF(
+    (SELECT COUNT(*) 
+      FROM users 
+      WHERE cpf = '${cpf}' OR
+       email = '${email}') = 1,
+    TRUE, FALSE) AS exist;`);
+
+     return rows[0].exist;
+}
+
+module.exports = { GetAll, 
+  GetByCpf, 
+  GetById, 
+  GetByCpfOrEmail, 
+  GetWithRolesByCpf,
+  GetWithRolesById, 
+  GetRecoverCodeByCpf, 
+  UserCpfExists,
+  UserCpfOrEmailExists,
+  UpdatePasswordByCpf,
+  InsertUser};

@@ -40,7 +40,7 @@ routes.get("/user/:usuarioId", (req, res) =>
 routes.get("/user/:usuarioId/pets", (req, res) =>
   secure.secureRoute(req, res, null, UserController.getUserPets)
 );
-routes.post("/user", (req, res) =>
+routes.post("/user/register", (req, res) =>
   secure.secureRoute(req, res, { system: true }, UserController.createUser)
 );
 routes.put("/user", (req, res) =>

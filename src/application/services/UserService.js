@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const UsuarioRepository = require("../../infra/database/repository/UserRepository");
 
 
@@ -12,6 +13,26 @@ async function GetUserById(id){
   var user = await UsuarioRepository.GetById(id);
 
   return(ValidateSingleUser(user));
+}
+
+async function CpfOrEmailExists(cpf, email){
+
+  var exists = await UsuarioRepository.UserCpfOrEmailExists(cpf, email);
+
+  return(exists == 1);
+}
+
+async function CreateNewUser({cpf, nome, email, senha, criadoPor}){
+
+  email = email.replace(/[^a-zA-Z0-9@-_.]/gi, '');
+  senha = await bcrypt.hash(senha, 10);
+  cpf = cpf.replace(/[^0-9]/g, '');
+
+  const newUser = await UsuarioRepository.InsertUser({cpf, nome, email, senha, criadoPor});
+  console.log(newUser);
+
+  return newUser;
+
 }
 
 async function GetUserWithRolesById(id){
@@ -37,4 +58,4 @@ async function ValidateManyUser(users){
   return null;
 }
 
-module.exports = {GetUsers, GetUserById, GetUserWithRolesById}
+module.exports = {GetUsers, GetUserById, CpfOrEmailExists, GetUserWithRolesById, CreateNewUser}

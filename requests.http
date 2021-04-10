@@ -7,7 +7,7 @@
 // Prod
 //@url =https://maestro-frotas-backend-my.herokuapp.com/api/v1
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXNjcmlwdGlvbiI6IkpXVCBUb2tlbiIsImlkIjoxLCJ0eXBlIjoicm9vdCIsInVzZXIiOnsiaWQiOjEsIm5vbWUiOiJSYWZhZWwiLCJzb2JyZW5vbWUiOiJBLiBSYWJlbG8iLCJlbWFpbCI6InJhZmFlbF9yYWJlbG9AbGl2ZS5jb20iLCJjcGYiOiIwNzkxOTA0ODY1NiIsImRhdGFfbmFzY2ltZW50byI6IjE5ODUtMDUtMjBUMDM6MDA6MDAuMDAwWiIsInJvbGVfbmFtZSI6InJvb3QiLCJhY3RpdmVfcm9sZSI6MSwiaXNfcm9vdCI6MSwiaXNfc3lzIjowLCJpc191c2VyIjoxLCJpc19hZG0iOjAsInR5cGUiOiJyb290In0sImlhdCI6MTYxNzc1NTk3NywiZXhwIjoxNjE3NzYyMzc3fQ.-arZvtUyKXf2zLGpQZbAqbmlVjvTT2aHKvNnhpxNiMY
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXNjcmlwdGlvbiI6IkpXVCBUb2tlbiIsImlkIjoxLCJ0eXBlIjoiYWRtaW4iLCJ1c2VyIjp7ImlkIjoxLCJub21lIjoiUmFmYWVsIiwic29icmVub21lIjoiQS4gUmFiZWxvIiwiZW1haWwiOiJyYWZhZWxfcmFiZWxvQGxpdmUuY29tIiwiY3BmIjoiMDc5MTkwNDg2NTYiLCJkYXRhX25hc2NpbWVudG8iOiIxOTg1LTA1LTIwVDAzOjAwOjAwLjAwMFoiLCJyb2xlX25hbWUiOiJhZG0iLCJhY3RpdmVfcm9sZSI6MSwiaXNfcm9vdCI6MCwiaXNfc3lzIjowLCJpc191c2VyIjoxLCJpc19hZG0iOjEsInR5cGUiOiJhZG1pbiJ9LCJpYXQiOjE2MTgwMTU2ODEsImV4cCI6MTYxODAyMjA4MX0.hi6YdTS7q45CixLJLvUCKZl8C43wp5raIwu5N66Fq1w
 
 GET {{url}}/
 content-type: application/json
@@ -26,13 +26,15 @@ GET {{url}}/user/1
 content-type: application/json
 Authorization: Bearer {{token}}
 ###
-POST {{url}}/user
+
+POST {{url}}/user/register
 content-type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "nome": "teste user",
-    "email": "systeste-hero@gmail.com",
+    "nome": "Rafael",
+    "cpf": "968.513.190-20",
+    "email": "ra@gmail.com",
     "senha": "123ad123"
 }
 ###
@@ -68,7 +70,7 @@ content-type: application/json
 {
     //"cpf": "{{adm_user}}",
     "cpf": "07919048656",
-    "senha": "{{adm_pass}}"
+    "senha": "123adg666"
 }
 ###
 
@@ -94,7 +96,7 @@ content-type: application/json
 
 {
     "cpf": "07919048656",
-    "code": "558189",
+    "code": "983347",
     "pass": "123adg666"
 }
 ###
