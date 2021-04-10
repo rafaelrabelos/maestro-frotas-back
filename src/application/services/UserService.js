@@ -25,9 +25,9 @@ async function CpfOrEmailExists(cpf, email){
 async function CreateNewUser({cpf, nome, email, senha, criadoPor}){
   
   senha = await bcrypt.hash(senha, 10);
-
+  cpf = cpf.replace(/[^0-9]/g, '');
+  
   const newUser = await UsuarioRepository.InsertUser({cpf, nome, email, senha, criadoPor});
-  console.log(newUser);
 
   return newUser;
 
