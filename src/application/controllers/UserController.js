@@ -5,7 +5,10 @@ const validaCpfCnpj = require("cpf-cnpj-validator");
 const secure = require("../../util/libs/secure");
 
 async function createUser(req, res) {
-  const { cpf, nome, email, senha } = req.body;
+  var { cpf, nome, email, senha } = req.body;
+
+  email = email.replace(/[^a-zA-Z0-9@-_.]/gi, '');
+  cpf = cpf.replace(/[^0-9]/g, '');
 
   try {
     if(!validaCpfCnpj.cpf.isValid(cpf)){
@@ -22,6 +25,7 @@ async function createUser(req, res) {
           erros: [`Atributos obrigatorios: nome, email, senha e cpf.`],
         });
     }
+    const ex = await UserService.CpfOrEmailExists(cpf, email);
 
     if (await UserService.CpfOrEmailExists(cpf, email) ) {
       return res
