@@ -4,8 +4,8 @@ const util = require('../../util/libs/datetime');
 async function SendRecoverEmail(user, code) {
 
   const from = {
-    name: 'Frotas',
-    email: 'frotas@intellicondo.xyz'
+    name: process.env.RECOVERY_PASS_NAME_FROM,
+    email: process.env.RECOVERY_PASS_EMAIL_FROM
   }
 
   const to = {
