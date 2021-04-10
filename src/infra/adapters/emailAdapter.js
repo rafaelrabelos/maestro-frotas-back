@@ -1,7 +1,10 @@
-const EmailAdapter = require('../../infra/adapters/emailAdapter');
+const sendgridAdapter = require("./sendgridAdapter");
+const mailjetAdapter = require("./MailjetAdapter");
 
-async function Send(user, code) {
+const defaultAdapter = mailjetAdapter;
 
-  return true;
-}
-module.exports = { Send };
+module.exports = {
+  sendgridAdapter,
+  mailjetAdapter,
+  defaultAdapter
+};

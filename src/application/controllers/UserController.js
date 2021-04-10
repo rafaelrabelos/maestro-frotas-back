@@ -1,28 +1,39 @@
 const Model = require("../../infra/database/mongoRepository/usuario");
 const UserService = require("../services/UserService");
 const password_check = require("password-validator");
+const validaCpfCnpj = require("cpf-cnpj-validator");
 const secure = require("../../util/libs/secure");
 
 async function createUser(req, res) {
-  const { nome, email, senha } = req.body;
+  var { cpf, nome, email, senha } = req.body;
+
+  email = email.replace(/[^a-zA-Z0-9@-_.]/gi, '');
+  cpf = cpf.replace(/[^0-9]/g, '');
 
   try {
-    if (!nome || !email || !senha) {
+    if(!validaCpfCnpj.cpf.isValid(cpf)){
+      return res
+        .status(400)
+        .send({ status: false, erros: ["CPF inválido"] });
+    }
+
+    if (!nome || !email || !senha || !cpf) {
       return res
         .status(400)
         .send({
           status: false,
-          erros: [`Atributos obrigatorios: nome, email, senha.`],
+          erros: [`Atributos obrigatorios: nome, email, senha e cpf.`],
         });
     }
+    const ex = await UserService.CpfOrEmailExists(cpf, email);
 
-    if (await Model.User.findOne({ email })) {
+    if (await UserService.CpfOrEmailExists(cpf, email) ) {
       return res
         .status(400)
         .send({ status: false, erros: ["Dados já existem no sistema"] });
     }
 
-    const user = await Model.User.create({
+    const user = await UserService.CreateNewUser({
       ...req.body,
       criadoPor: req.decodedJWT.id || undefined,
     });

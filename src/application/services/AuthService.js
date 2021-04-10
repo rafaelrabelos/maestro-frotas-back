@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const validations = require("../../util/libs/validations");
 const UserRepository = require("../../infra/database/repository/UserRepository");
 const EmailService = require("./emailService");
+const util = require('../../util/libs/datetime');
 
 async function AutheticateUser(cpf = "", pass = "") {
   const valideInput = await ValideLoginInputData(cpf, pass);
@@ -56,15 +57,15 @@ async function SendRecoveryInfo(cpf = "") {
     return { errorMessage: valideInput };
   }
   
-  var userCode = await GenerateRecoverCode(cpf);
+  var userData = await GenerateRecoverCode(cpf);
 
-  if(userCode && userCode.code){
-    const SendStatus = await EmailService.SendRecoverEmail(userCode, userCode.code);
-
-    if (SendStatus){
-      return { status: true, sent_email: userCode.email, vality: userCode.valid_date };
+  if(userData && userData.code){
+    const SendStatus = await EmailService.SendRecoverEmail(userData, userData.code);
+    
+    if (SendStatus.status){
+      return { status: true, sent_email: userData.email, vality: util.dataTempoFormatada(userData.valid_date) };
     } else{
-      return { errorMessage: "erro ao enviar email" };
+      return { errorMessage: SendStatus.ErrorMessage };
     }
   }
   else{
@@ -91,11 +92,11 @@ async function ValidateRecoveryCode(cpf, code) {
     userCode = userCode[0];
   }
 
-  if (userCode.code == code) {
+  if (userCode.code == code && userCode.code_is_valid == 1) {
     return { status: true, vality: true };
   }
 
-  return { errorMessage: "Código não é válido." };
+  return { errorMessage: "O código informado é inválido ou expirou." };
 }
 
 async function SetNewPassword(cpf, code, pass){
