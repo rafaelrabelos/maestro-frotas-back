@@ -265,7 +265,7 @@ async function UserCpfExists(cpf =""){
       WHERE cpf = '${cpf}') = 1,
     TRUE, FALSE) AS exist;`);
 
-     return rows[0].exist;
+    return rows.length === 1 ? rows[0].exist : false;
 }
 
 async function UserCpfOrEmailExists(cpf ="", email = ""){
@@ -280,7 +280,7 @@ async function UserCpfOrEmailExists(cpf ="", email = ""){
        email = '${email}') = 1,
     TRUE, FALSE) AS exist;`);
 
-     return rows[0].exist;
+    return rows.length === 1 ? rows[0].exist : false;
 }
 
 module.exports = { GetAll, 

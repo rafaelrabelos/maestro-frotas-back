@@ -5,12 +5,17 @@ const UsuarioRepository = require("../../infra/database/repository/UserRepositor
 async function GetUsers(){
 
   var users = await UsuarioRepository.GetAll();
+
+  if(users.erro) return { errorMessage: users.erro };
+
   return ValidateManyUser(users);
 }
 
 async function GetUserById(id){
 
   var user = await UsuarioRepository.GetById(id);
+
+  if(user.erro) return { errorMessage: user.erro };
 
   return(ValidateSingleUser(user));
 }
@@ -29,6 +34,8 @@ async function CreateNewUser({cpf, nome, email, senha, criadoPor}){
   
   const newUser = await UsuarioRepository.InsertUser({cpf, nome, email, senha, criadoPor});
 
+  if(newUser.erro) return { errorMessage: newUser.erro };
+
   return newUser;
 
 }
@@ -36,6 +43,9 @@ async function CreateNewUser({cpf, nome, email, senha, criadoPor}){
 async function GetUserWithRolesById(id){
 
   var user = await UsuarioRepository.GetWithRolesById(id);
+
+  if(user.erro) return { errorMessage: user.erro };
+
   return(ValidateSingleUser(user));
 }
 
