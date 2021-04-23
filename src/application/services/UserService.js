@@ -20,6 +20,16 @@ async function GetUserById(id){
   return(ValidateSingleUser(user));
 }
 
+async function GetSysAdminUser(){
+
+  var user = await UsuarioRepository.GetAdmin();
+
+  if(user.erro) return { errorMessage: user.erro };
+
+  return(ValidateSingleUser(user));
+}
+
+
 async function CpfOrEmailExists(cpf, email){
 
   var exists = await UsuarioRepository.UserCpfOrEmailExists(cpf.replace(/[^0-9]/g, ''), email);
@@ -66,4 +76,4 @@ async function ValidateManyUser(users){
   return null;
 }
 
-module.exports = {GetUsers, GetUserById, CpfOrEmailExists, GetUserWithRolesById, CreateNewUser}
+module.exports = {GetUsers, GetUserById, GetSysAdminUser, CpfOrEmailExists, GetUserWithRolesById, CreateNewUser}

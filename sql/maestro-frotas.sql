@@ -256,6 +256,43 @@ LOCK TABLES `fleet` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `messages` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `from_user` bigint NOT NULL,
+  `to_user` bigint NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `message` text CHARACTER SET utf8 COLLATE utf8_general_ci,
+  `delivered` tinyint(1) NOT NULL DEFAULT '0',
+  `readed` tinyint(1) NOT NULL DEFAULT '0',
+  `replying_message_id` bigint DEFAULT NULL,
+  `sent_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `messages_un` (`id`),
+  KEY `messages_FK` (`from_user`),
+  KEY `messages_FK_1` (`to_user`),
+  KEY `messages_FK_2` (`replying_message_id`),
+  CONSTRAINT `messages_FK` FOREIGN KEY (`from_user`) REFERENCES `users` (`id`),
+  CONSTRAINT `messages_FK_1` FOREIGN KEY (`to_user`) REFERENCES `users` (`id`),
+  CONSTRAINT `messages_FK_2` FOREIGN KEY (`replying_message_id`) REFERENCES `messages` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `messages`
+--
+
+LOCK TABLES `messages` WRITE;
+/*!40000 ALTER TABLE `messages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `province`
 --
 
@@ -422,7 +459,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('Rafael','A. Rabelo','1985-05-20','07919048656','$2b$10$VRky1pa9WLIkwtnIlfOe7.w4NGZKicR/3M.ZHCvYv0h9Q76a6LR9a',3,'2021-04-05 23:02:07',NULL,1,'rafael_rabelo@live.com'),('System','sys','1985-05-20','07919048655','$2b$10$OLq68Pwd5DxZG/0JlbL7tuMDge0q.yAYCxSnm42Iq7xPMp0lg1SNu',4,'2021-04-05 23:04:03',NULL,2,'rafaelderabelo@gmail.com'),('Rafael','',NULL,'07940044664','$2b$10$2gqJ3F2BPQCytxP3WbDMiu9VEq4sQc9rrykTqW4fB9C1URJYT/.NC',2,'2021-04-10 02:46:17',2,3,'tempconnarti@outlook.com'),('Mirella','',NULL,'14048274635','$2b$10$Gbpg304Lf6ttUK8PAMRrI.SlR69ujnAQJQwOWqHeZTlVYS6fDiKdC',2,'2021-04-11 21:35:29',2,4,'mirella.soares@sga.pucminas.br');
+INSERT INTO `users` VALUES ('Rafael','A. Rabelo','1985-05-20','07919048656','$2b$10$VRky1pa9WLIkwtnIlfOe7.w4NGZKicR/3M.ZHCvYv0h9Q76a6LR9a',3,'2021-04-05 23:02:07',NULL,1,'rafael_rabelo@live.com'),('System','sys','1985-05-20','07919048655','$2b$10$OLq68Pwd5DxZG/0JlbL7tuMDge0q.yAYCxSnm42Iq7xPMp0lg1SNu',4,'2021-04-05 23:04:03',NULL,2,'rafaelderabelo@gmail.com'),('Rafael','',NULL,'07940044664','$2b$10$2gqJ3F2BPQCytxP3WbDMiu9VEq4sQc9rrykTqW4fB9C1URJYT/.NC',1,'2021-04-10 02:46:17',2,3,'tempconnarti@outlook.com'),('Mirella','',NULL,'14048274635','$2b$10$Gbpg304Lf6ttUK8PAMRrI.SlR69ujnAQJQwOWqHeZTlVYS6fDiKdC',2,'2021-04-11 21:35:29',2,4,'mirella.soares@sga.pucminas.br');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -555,4 +592,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-22 21:16:17
+-- Dump completed on 2021-04-22 23:52:46
