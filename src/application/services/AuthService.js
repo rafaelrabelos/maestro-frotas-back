@@ -31,18 +31,24 @@ async function AutheticateUser(cpf = "", pass = "") {
 }
 
 async function ValideLoginUser(user = [], pass) {
+  
   if (!user || user.length !== 1) {
     return `Dados não encontrados para o usuário informado.`;
   }
 
   var user = user[0];
 
+  if (user.is_blocked == 1) {
+    return `Usuário temporariamente bloqueado`;
+  }
+
   if (!user.senha) {
     return "dados de validação não retornados pela base.";
   }
+  console.log(user);
 
   if (!(await bcrypt.compare(pass, user.senha))) {
-    return "A senha informada é inválida.";
+    return `A senha informada é inválida. ${user.count_tryes > 8? user.try_desc :''}`;
   }
 
   user.senha = undefined;

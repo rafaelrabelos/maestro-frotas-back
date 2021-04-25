@@ -6,26 +6,36 @@ const os = require("os");
 
 const routes = express.Router();
 
-routes.get("/", (req, res) =>
-  res.status(200).send({
-    info: {
-      apiName: "Maestro frotas",
-      apiHost: os.hostname() || "Não indefificado",
-      apiEndpoints: ["/api"],
-      apiVer: "v1",
-      apiPort: process.env.API_PORT || "Não indefificado",
-    },
-    createdBy: [
-      "Grupo LABORATÓRIO DE DESENVOLVIMENTO DE SISTEMAS DE INFORMAÇÃO"
-    ],
-  })
+const appInfo = {
+  info: {
+    apiName: "Maestro frotas",
+    apiHost: os.hostname() || "Não indefificado",
+    apiEndpoints: ["/api"],
+    apiVer: "v1",
+    apiPort: process.env.API_PORT || "Não indefificado",
+  },
+  createdBy: [
+    "Grupo LABORATÓRIO DE DESENVOLVIMENTO DE SISTEMAS DE INFORMAÇÃO"
+  ],
+}
+
+routes.get("/", (req, res) => 
+secure.secureRouteForUntrustedOrigin(req, res, (req, res) => res.status(200).send(appInfo))
 );
 
 // Auth
-routes.post("/auth/login", AuthController.Auth);
-routes.post("/auth/recovery/send-info", AuthController.SendRecoveryInfo);
-routes.post("/auth/recovery/validate-code", AuthController.ValidateRecoveryCode);
-routes.post("/auth/recovery/set-password", AuthController.SetNewPassword);
+routes.post("/auth/login", (req, res) =>
+  secure.secureRouteForUntrustedOrigin(req, res, AuthController.Auth)
+);
+routes.post("/auth/recovery/send-info", (req, res) => 
+  secure.secureRouteForUntrustedOrigin(req, res, AuthController.SendRecoveryInfo)
+);
+routes.post("/auth/recovery/validate-code", (req, res) => 
+  secure.secureRouteForUntrustedOrigin(req, res, AuthController.ValidateRecoveryCode)
+);
+routes.post("/auth/recovery/set-password", (req, res) => 
+  secure.secureRouteForUntrustedOrigin(req, res, AuthController.SetNewPassword)
+);
 
 // Users
 routes.get("/user", (req, res) =>
