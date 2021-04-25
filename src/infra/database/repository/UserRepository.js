@@ -115,17 +115,16 @@ async function GetWithRolesByCpf(cpf = "") {
       u.cpf, 
       u.senha, 
       u.data_nascimento, 
-      r.role_name, 
+      r.role_name,
       IF(r.active_role, 1,0) AS active_role,
       IF(r.root_role, 1,0) AS is_root,
       IF(r.sys_role,  1,0) AS is_sys,
       IF(r.user_role, 1,0) AS is_user,
       IF(r.adm_role, 1,0) AS is_adm
     FROM  users AS u
-      JOIN roles AS r
-      ON u.role = r.id
-    WHERE  u.cpf = '${cpf}'`);
-
+      JOIN roles AS r ON u.role = r.id
+    WHERE  u.cpf = '${cpf}'
+    `);
   return rows;
 }
 
