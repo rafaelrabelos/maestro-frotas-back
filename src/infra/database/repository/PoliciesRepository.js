@@ -46,6 +46,27 @@ async function ClearExpireds() {
   return rows;
 }
 
+async function GetByUserIdAndIp(userId, ip){
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+  SELECT 
+      p.id,
+      p.user_id, 
+      p.black_listed,
+      (p.date_to_keep_blocked > NOW()) as is_blocked,
+      p.date_to_keep_blocked,
+      p.user_ip,
+      p.created_at,
+      p.counter,
+      p.description 
+    FROM users_policies p
+    WHERE
+    user_id=${userId} AND user_ip='${ip}'
+  `);
+  return rows;
+}
+
 async function GetActiveSuspeciousTrying(ip, userId=null) {
   const db = await mysql();
 
@@ -123,6 +144,7 @@ async function InsertOrUpdateSuspeciousTrying(ip, userId=null) {
 }
 
 module.exports = { 
+  GetByUserIdAndIp,
   GetByIp, 
   GetActiveSuspeciousTrying, 
   ClearExpireds, 

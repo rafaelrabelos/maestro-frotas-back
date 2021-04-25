@@ -116,9 +116,6 @@ async function GetWithRolesByCpf(cpf = "") {
       u.senha, 
       u.data_nascimento, 
       r.role_name,
-      (up.date_to_keep_blocked > NOW()) as is_blocked,
-      up.counter as count_tryes,
-      up.description as try_desc,
       IF(r.active_role, 1,0) AS active_role,
       IF(r.root_role, 1,0) AS is_root,
       IF(r.sys_role,  1,0) AS is_sys,
@@ -126,11 +123,7 @@ async function GetWithRolesByCpf(cpf = "") {
       IF(r.adm_role, 1,0) AS is_adm
     FROM  users AS u
       JOIN roles AS r ON u.role = r.id
-      JOIN users_policies up  ON up.user_id = u.id 
     WHERE  u.cpf = '${cpf}'
-    GROUP BY up.date_to_keep_blocked, up.counter, up.description 
-    ORDER BY(is_blocked) DESC
-    LIMIT 1
     `);
   return rows;
 }

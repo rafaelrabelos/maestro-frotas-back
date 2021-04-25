@@ -1,10 +1,12 @@
 const bcrypt = require("bcrypt");
 const validations = require("../../util/libs/validations");
 const UserRepository = require("../../infra/database/repository/UserRepository");
+const PoliciesRepository = require("../../infra/database/repository/PoliciesRepository");
 const EmailService = require("./emailService");
 const util = require('../../util/libs/datetime');
 
-async function AutheticateUser(cpf = "", pass = "") {
+async function AutheticateUser(cpf = "", pass = "", req) {
+
   const valideInput = await ValideLoginInputData(cpf, pass);
   var user = null;
 
@@ -13,7 +15,7 @@ async function AutheticateUser(cpf = "", pass = "") {
   }
 
   user = await UserRepository.GetWithRolesByCpf(cpf.replace(/[^0-9]/g, ''));
-  user = await ValideLoginUser(user, pass);
+  user = await ValideLoginUser(user, pass, req);
 
   if (typeof user === "string") {
     return { errorMessage: user };
@@ -30,25 +32,35 @@ async function AutheticateUser(cpf = "", pass = "") {
   return user;
 }
 
-async function ValideLoginUser(user = [], pass) {
+async function ValideLoginUser(user = [], pass, req) {
   
   if (!user || user.length !== 1) {
     return `Dados não encontrados para o usuário informado.`;
   }
 
-  var user = user[0];
+  const { client_ip } = req.headers;
 
-  if (user.is_blocked == 1) {
+  user = user[0];
+  user.policies = (await PoliciesRepository.GetByUserIdAndIp(user.id, client_ip ))[0];
+  console.log(user)
+  if (user.policies && user.policies.is_blocked == 1) {
     return `Usuário temporariamente bloqueado`;
   }
 
   if (!user.senha) {
     return "dados de validação não retornados pela base.";
   }
-  console.log(user);
 
   if (!(await bcrypt.compare(pass, user.senha))) {
-    return `A senha informada é inválida. ${user.count_tryes > 8? user.try_desc :''}`;
+
+    if(user.policies){
+      return `
+      A senha informada é inválida.
+      ${user.policies.counter > 7? user.policies.description :''}
+      `;
+    }
+
+    return `A senha informada é inválida.`
   }
 
   user.senha = undefined;

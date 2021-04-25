@@ -4,7 +4,7 @@ const Secure = require('../../util/libs/secure');
 
 async function Auth(req, res) {
   const { cpf, senha } = req.body;
-  const user = await AuthService.AutheticateUser(cpf, senha);
+  const user = await AuthService.AutheticateUser(cpf, senha, req);
   if (!user) {
     return res.status(500).send({
       status: false,
