@@ -11,6 +11,7 @@
 
 GET {{url}}/
 content-type: application/json
+client_ip: 192.168.0.1
 ###
 
 // user/
@@ -66,16 +67,18 @@ Authorization: Bearer {{token}}
 // login
 POST  {{url}}/auth/login
 content-type: application/json
+client_ip: 192.168.0.1
 
 {
     //"cpf": "{{adm_user}}",
-    "cpf": "183.622.060-04",
+    "cpf": "07919048656",
     "senha": "123adg666"
 }
 ###
 
 POST  {{url}}/auth/recovery/send-info
 content-type: application/json
+client_ip: 192.168.0.1
 
 {
     "cpf": "07919048656"
@@ -84,6 +87,7 @@ content-type: application/json
 
 POST  {{url}}/auth/recovery/validate-code
 content-type: application/json
+client_ip: 192.168.0.1
 
 {
     "cpf": "079.19048656",
@@ -93,6 +97,7 @@ content-type: application/json
 
 POST  {{url}}/auth/recovery/set-password
 content-type: application/json
+client_ip: 192.168.0.1
 
 {
     "cpf": "07919048656",
