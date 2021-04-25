@@ -7,15 +7,14 @@ async function secureRoute(req, res, validators, _next) {
     req.decodedJWT = jwt.decodeJWT(req.headers.authorization);
 
     const { client_ip } = req.headers;
-    const isUserNotAllowed = await isUserBlocked();
-    const isOriginNotAllowed = await isOriginBlocked(client_ip);
-
-    if(isUserNotAllowed || isOriginNotAllowed){
+    const originData = await originInfo(client_ip);
+  
+    if(originData.blocked){
       return res
         .status(403)
-        .send({ status: false, erros: ['Usuário/IP com bloqueio'] });
+        .send({ status: false, erros: originData.descriptions });
     }
-    
+
     if (validators) {
       const checAthorizedResult = await checkUserRights(req, validators);
 

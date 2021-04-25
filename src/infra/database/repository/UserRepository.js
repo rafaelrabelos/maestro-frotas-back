@@ -170,6 +170,25 @@ async function GetUserRoleId(){
     return rows[0].id;
 }
 
+async function GetAdmin(){
+
+  const db = await mysql();
+
+  const [rows] = await db.execute(`
+  SELECT 
+    u.id,
+    u.nome,
+    u.cpf,
+    u.email 
+  FROM users u join roles r
+  ON u.role = r.id 
+  WHERE  r.role_name = 'adm'`)
+
+    return rows;
+}
+
+
+
 async function InsertUser({cpf, nome, email, senha, criadoPor}){
 
   const db = await mysql();
@@ -264,7 +283,7 @@ async function UserCpfExists(cpf =""){
       WHERE cpf = '${cpf}') = 1,
     TRUE, FALSE) AS exist;`);
 
-     return rows[0].exist;
+    return rows.length === 1 ? rows[0].exist : false;
 }
 
 async function UserCpfOrEmailExists(cpf ="", email = ""){
@@ -279,7 +298,7 @@ async function UserCpfOrEmailExists(cpf ="", email = ""){
        email = '${email}') = 1,
     TRUE, FALSE) AS exist;`);
 
-     return rows[0].exist;
+    return rows.length === 1 ? rows[0].exist : false;
 }
 
 module.exports = { GetAll, 
@@ -288,7 +307,8 @@ module.exports = { GetAll,
   GetByCpfOrEmail, 
   GetWithRolesByCpf,
   GetWithRolesById, 
-  GetRecoverCodeByCpf, 
+  GetRecoverCodeByCpf,
+  GetAdmin, 
   UserCpfExists,
   UserCpfOrEmailExists,
   UpdatePasswordByCpf,
