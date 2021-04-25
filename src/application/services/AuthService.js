@@ -43,7 +43,7 @@ async function ValideLoginUser(user = [], pass, req) {
 
   user = user[0];
   user.policies = (await PoliciesRepository.GetByUserIdAndIp(user.id, client_ip ))[0];
-  console.log(user)
+  
   if (user.policies && user.policies.is_blocked == 1) {
     return `Usuário temporariamente bloqueado`;
   }

@@ -7,7 +7,7 @@
 // Prod
 //@url =https://maestro-frotas-backend-my.herokuapp.com/api/v1
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXNjcmlwdGlvbiI6IkpXVCBUb2tlbiIsImlkIjoxLCJ0eXBlIjoicm9vdCIsInVzZXIiOnsiaWQiOjEsIm5vbWUiOiJSYWZhZWwiLCJzb2JyZW5vbWUiOiJBLiBSYWJlbG8iLCJlbWFpbCI6InJhZmFlbF9yYWJlbG9AbGl2ZS5jb20iLCJjcGYiOiIwNzkxOTA0ODY1NiIsImRhdGFfbmFzY2ltZW50byI6IjE5ODUtMDUtMjBUMDM6MDA6MDAuMDAwWiIsInJvbGVfbmFtZSI6InJvb3QiLCJhY3RpdmVfcm9sZSI6MSwiaXNfcm9vdCI6MSwiaXNfc3lzIjowLCJpc191c2VyIjoxLCJpc19hZG0iOjAsInR5cGUiOiJyb290In0sImlhdCI6MTYxOTE0NTQ0NywiZXhwIjoxNjE5MTUxODQ3fQ.fULokNq59P0uOaB78XkEqzlAoCjzxAgMrUEiSLD5FvA
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXNjcmlwdGlvbiI6IkpXVCBUb2tlbiIsImlkIjoxLCJ0eXBlIjoicm9vdCIsInVzZXIiOnsiaWQiOjEsIm5vbWUiOiJSYWZhZWwiLCJzb2JyZW5vbWUiOiJBLiBSYWJlbG8iLCJlbWFpbCI6InJhZmFlbF9yYWJlbG9AbGl2ZS5jb20iLCJjcGYiOiIwNzkxOTA0ODY1NiIsImRhdGFfbmFzY2ltZW50byI6IjE5ODUtMDUtMjBUMDM6MDA6MDAuMDAwWiIsInJvbGVfbmFtZSI6InJvb3QiLCJhY3RpdmVfcm9sZSI6MSwiaXNfcm9vdCI6MSwiaXNfc3lzIjowLCJpc191c2VyIjoxLCJpc19hZG0iOjAsInBvbGljaWVzIjp7ImlkIjo3NCwidXNlcl9pZCI6MSwiYmxhY2tfbGlzdGVkIjowLCJpc19ibG9ja2VkIjowLCJkYXRlX3RvX2tlZXBfYmxvY2tlZCI6IjIwMjEtMDQtMjVUMjA6MzE6MjEuMDAwWiIsInVzZXJfaXAiOiIxOTIuMTY4LjAuMSIsImNyZWF0ZWRfYXQiOiIyMDIxLTA0LTI1VDIwOjMxOjIxLjAwMFoiLCJjb3VudGVyIjoxMSwiZGVzY3JpcHRpb24iOiJUZW50YXRpdmEgZGUgYWNlc3NvIHN1c3BlaXRhIHBhcmEgQDE5Mi4xNjguMC4xLCB0ZW50YXRpdmEgMTEgZGUgMTUifSwidHlwZSI6InJvb3QifSwiaWF0IjoxNjE5MzcxOTIzLCJleHAiOjE2MTkzNzgzMjN9.kEzOVoAWJ39hE1t4E5TQsaUx4klgsqmYnpoEOk1QC2A
 
 GET {{url}}/
 content-type: application/json
@@ -17,19 +17,23 @@ client_ip: 192.168.0.1
 // user/
 GET {{url}}/user
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 ###
 GET {{url}}/user/todos
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 ###
 GET {{url}}/user/1
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 ###
 
 POST {{url}}/user/register
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 
 {
@@ -41,6 +45,7 @@ Authorization: Bearer {{token}}
 ###
 PUT {{url}}/user/5fc28d6ce11978245992e085
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 
 {
@@ -51,6 +56,7 @@ Authorization: Bearer {{token}}
 ###
 PUT {{url}}/user
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 
 {
@@ -61,6 +67,7 @@ Authorization: Bearer {{token}}
 ###
 DELETE {{url}}/user/5fc28d6ce11978245992e085
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 ###
 
@@ -107,13 +114,15 @@ client_ip: 192.168.0.1
 ###
 
 // Message
+
 POST  {{url}}/message/contactpage
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 
 {
     "name":"Rafael",
     "email":"rafael@email.com",
     "subject":"teste",
-     "message":"no message inside"
+    "message":"no message inside"
 }

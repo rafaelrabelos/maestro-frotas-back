@@ -31,8 +31,6 @@ async function SendContactPageMessage(req, res) {
 
     const createMessageRes = await MessageService.CreateNewMessage({ from, to: to.id, title: subject, message: bodymsg });
 
-    console.log(message);
-
     if (!createMessageRes) {
       return res
         .status(500)
