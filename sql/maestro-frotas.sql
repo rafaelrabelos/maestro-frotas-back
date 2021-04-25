@@ -472,16 +472,18 @@ DROP TABLE IF EXISTS `users_policies`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users_policies` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_id` bigint NOT NULL,
+  `user_id` bigint DEFAULT NULL,
   `black_listed` tinyint(1) NOT NULL DEFAULT '0',
   `date_to_keep_blocked` datetime NOT NULL,
   `user_ip` varchar(100) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `counter` int NOT NULL DEFAULT '1',
+  `description` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_policies_un` (`id`,`user_id`,`user_ip`),
   KEY `users_policies_FK` (`user_id`),
   CONSTRAINT `users_policies_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -490,6 +492,7 @@ CREATE TABLE `users_policies` (
 
 LOCK TABLES `users_policies` WRITE;
 /*!40000 ALTER TABLE `users_policies` DISABLE KEYS */;
+INSERT INTO `users_policies` VALUES (10,NULL,0,'2021-04-25 09:12:25','186.247.50.201','2021-04-25 09:12:25',1,'Tentativa de acesso suspeita para 186.247.50.201@*');
 /*!40000 ALTER TABLE `users_policies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -592,4 +595,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-22 23:52:46
+-- Dump completed on 2021-04-25  6:18:54
