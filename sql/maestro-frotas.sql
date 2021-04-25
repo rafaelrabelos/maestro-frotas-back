@@ -357,7 +357,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`h92htipjsoutywmk`@`%`*/ /*!50003 TRIGGER `recover-code` BEFORE INSERT ON `recovery` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50003 TRIGGER `recover-code` BEFORE INSERT ON `recovery` FOR EACH ROW BEGIN
 	SET NEW.valid_date = DATE_ADD(NOW(), INTERVAL 2 HOUR),
 	NEW.code = floor(rand()*900000)+100000;
 END */;;

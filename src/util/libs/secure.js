@@ -1,10 +1,21 @@
 const UserService = require("../../application/services/UserService");
+const SecureService = require('../../application/services/secureService');
 const jwt = require("../../application/midleware/jwt");
 
 async function secureRoute(req, res, validators, _next) {
   if (jwt.valideAuthJWT(req, res) === true) {
     req.decodedJWT = jwt.decodeJWT(req.headers.authorization);
 
+    const { client_ip } = req.headers;
+    const isUserNotAllowed = await isUserBlocked();
+    const isOriginNotAllowed = await isOriginBlocked(client_ip);
+
+    if(isUserNotAllowed || isOriginNotAllowed){
+      return res
+        .status(403)
+        .send({ status: false, erros: ['Usuário/IP com bloqueio'] });
+    }
+    
     if (validators) {
       const checAthorizedResult = await checkUserRights(req, validators);
 
@@ -18,6 +29,42 @@ async function secureRoute(req, res, validators, _next) {
       return _next(req, res);
     }
   }
+}
+
+async function secureRouteForUntrustedOrigin(req, res, _next){
+  const { client_ip } = req.headers;
+  const originData = await originInfo(client_ip);
+  
+  if(originData.blocked){
+    return res
+      .status(403)
+      .send({ status: false, erros: originData.descriptions });
+  }
+
+  return _next(req, res);
+}
+
+async function originInfo(ip) {
+  const policies = await SecureService.GetPoliciesByIP(ip);
+
+  if(Array.isArray(policies) && policies.length > 0){
+    const blocks = policies.filter( (policie) => policie.is_blocked );
+    const descriptions = blocks.map( (block) => block.description);
+    const blocked = blocks.length > 0;
+
+    return { blocked, descriptions }
+  }
+
+  return false;
+}
+
+async function registerSuspeciousTrying(req){
+  const { client_ip } = req.headers;
+  const { cpf } = req.body;
+
+  const policies = await SecureService.SyncSuspeciousTrying(client_ip, cpf);
+
+  return 
 }
 
 async function checkUserRights(req, rights) {
@@ -81,4 +128,4 @@ function isUserSystem(req, user) {
   return false;
 }
 
-module.exports = { secureRoute, checkUserRights, isRoot, isAdmin, isUserOwner };
+module.exports = { secureRoute, secureRouteForUntrustedOrigin, registerSuspeciousTrying, checkUserRights, isRoot, isAdmin, isUserOwner };

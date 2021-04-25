@@ -1,9 +1,10 @@
 const jwt = require("../midleware/jwt");
 const AuthService = require("../services/AuthService");
+const Secure = require('../../util/libs/secure');
 
 async function Auth(req, res) {
   const { cpf, senha } = req.body;
-  const user = await AuthService.AutheticateUser(cpf, senha);
+  const user = await AuthService.AutheticateUser(cpf, senha, req);
   if (!user) {
     return res.status(500).send({
       status: false,
@@ -12,6 +13,9 @@ async function Auth(req, res) {
   }
 
   if (!Array.isArray(user) && user.errorMessage) {
+
+    Secure.registerSuspeciousTrying(req);
+
     return res.status(400).send({
       status: false,
       erros: [user.errorMessage],
@@ -33,6 +37,9 @@ async function SendRecoveryInfo(req, res) {
   }
 
   if (recoverRes.errorMessage) {
+
+    Secure.registerSuspeciousTrying(req);
+    
     return res
       .status(400)
       .send({ status: false, erros: [recoverRes.errorMessage] });
@@ -54,6 +61,9 @@ async function ValidateRecoveryCode(req, res) {
   }
 
   if (recoverRes.errorMessage) {
+
+    Secure.registerSuspeciousTrying(req);
+
     return res
       .status(400)
       .send({ status: false, erros: [recoverRes.errorMessage] });
@@ -67,6 +77,9 @@ async function SetNewPassword(req, res) {
   const recoverRes = await AuthService.SetNewPassword(cpf.replace(/[^0-9]/g, ''), code, pass);
 
   if (!recoverRes) {
+
+    Secure.registerSuspeciousTrying(req);
+    
     return res
       .status(500)
       .send({ status: false, erros: [`Erro ao executar a ação.`] });
