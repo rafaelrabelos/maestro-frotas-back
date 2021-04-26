@@ -61,9 +61,9 @@ async function registerSuspeciousTrying(req){
   const { client_ip } = req.headers;
   const { cpf } = req.body;
 
-  const policies = await SecureService.SyncSuspeciousTrying(client_ip, cpf);
+  await SecureService.SyncSuspeciousTrying(client_ip, cpf);
 
-  return 
+  return;
 }
 
 async function checkUserRights(req, rights) {
