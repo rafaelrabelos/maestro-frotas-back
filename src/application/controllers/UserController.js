@@ -1,4 +1,3 @@
-const Model = require("../../infra/database/mongoRepository/usuario");
 const UserService = require("../services/UserService");
 const password_check = require("password-validator");
 const validaCpfCnpj = require("cpf-cnpj-validator");
@@ -25,7 +24,6 @@ async function createUser(req, res) {
           erros: [`Atributos obrigatorios: nome, email, senha e cpf.`],
         });
     }
-    const ex = await UserService.CpfOrEmailExists(cpf, email);
 
     if (await UserService.CpfOrEmailExists(cpf, email) ) {
       return res
