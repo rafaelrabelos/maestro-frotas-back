@@ -1,7 +1,7 @@
 const Mail = require('../../infra/adapters/emailAdapter');
 const util = require('../../util/libs/datetime');
 
-async function SendRecoverEmail(user, code) {
+async function SendRecoveryEmail(user, code) {
 
   const from = {
     name: process.env.RECOVERY_PASS_NAME_FROM,
@@ -41,4 +41,4 @@ async function SendRecoverEmail(user, code) {
   return resultAdapter;
 }
 
-module.exports = { SendRecoverEmail };
+module.exports = { SendRecoveryEmail };

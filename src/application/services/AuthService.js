@@ -78,7 +78,7 @@ async function SendRecoveryInfo(cpf = "") {
   var userData = await GenerateRecoverCode(cpf);
 
   if(userData && userData.code){
-    const SendStatus = await EmailService.SendRecoverEmail(userData, userData.code);
+    const SendStatus = await EmailService.SendRecoveryEmail(userData, userData.code);
     
     if (SendStatus.status){
       return { status: true, sent_email: userData.email, vality: util.dataTempoFormatada(userData.valid_date) };
