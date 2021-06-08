@@ -1,7 +1,7 @@
 const { mysql } = require("../connection");
 const bcrypt = require("bcrypt");
 
-async function GetAll() {
+async function GetAllUsers() {
   const db = await mysql();
 
   const [rows] = await db.query(`
@@ -13,11 +13,101 @@ async function GetAll() {
       u.email,
       u.data_nascimento,
       u.role AS role_id,
+      r.role_name,
       u.criado_em,
       u.criado_por
-    FROM users u
+    FROM users u, roles r WHERE u.role = r.id and r.role_name = 'user'
   `);
   return rows;
+}
+
+async function GetAllAdmin() {
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+  SELECT 
+    u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email,
+      u.data_nascimento,
+      u.role AS role_id,
+      r.role_name,
+      u.criado_em,
+      u.criado_por
+    FROM users u, roles r WHERE u.role = r.id and r.role_name = 'adm'
+  `);
+  return rows;
+}
+
+async function GetAllRoot() {
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+  SELECT 
+    u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email,
+      u.data_nascimento,
+      u.role AS role_id,
+      r.role_name,
+      u.criado_em,
+      u.criado_por
+    FROM users u, roles r WHERE u.role = r.id and r.role_name = 'root'
+  `);
+  return rows;
+}
+
+async function GetAllSys() {
+  const db = await mysql();
+
+  const [rows] = await db.query(`
+  SELECT 
+    u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email,
+      u.data_nascimento,
+      u.role AS role_id,
+      r.role_name,
+      u.criado_em,
+      u.criado_por
+    FROM users u, roles r WHERE u.role = r.id and r.role_name = 'sys'
+  `);
+  return rows;
+}
+
+async function GetBasedOnRole(roleName) {
+  const db = await mysql();
+  let where = `WHERE u.role = r.id and r.role_name= 'user'`;
+
+  if(roleName == 'adm'){
+    where = `WHERE u.role = r.id and r.role_name IN('adm', 'user') `
+  }
+  if(roleName == 'root'){
+    where = `WHERE u.role = r.id and r.role_name IN('root', 'adm', 'user') `
+  }
+
+  const [rows] = await db.query(`
+  SELECT 
+    u.id,
+      u.nome, 
+      u.sobrenome,
+      u.cpf,
+      u.email,
+      u.data_nascimento,
+      u.role AS role_id,
+      r.role_name,
+      u.criado_em,
+      u.criado_por
+    FROM users u, roles r ${where}
+  `);
+  return rows;
+
 }
 
 async function GetById(id) {
@@ -52,6 +142,7 @@ async function GetWithRolesById(id) {
       u.data_nascimento,
       u.criado_em,
       u.criado_por,
+      r.role_name,
       IF(r.active_role, 1,0) AS active_role,
       IF(r.root_role, 1,0) AS is_root,
       IF(r.sys_role,  1,0) AS is_sys,
@@ -170,6 +261,18 @@ async function GetUserRoleId(){
     return rows[0].id;
 }
 
+async function UpdateById(id, userData){
+
+  const {nome, sobrenome, email} = userData;
+  const db = await mysql();
+  
+  const [rows] = await db.query(`
+  UPDATE users SET nome='${nome}', sobrenome='${sobrenome}', email='${email}'  WHERE id='${id}'
+  `);
+
+  return rows;
+}
+
 async function InsertUser({cpf, nome, email, senha, criadoPor}){
 
   const db = await mysql();
@@ -282,7 +385,12 @@ async function UserCpfOrEmailExists(cpf ="", email = ""){
      return rows[0].exist;
 }
 
-module.exports = { GetAll, 
+module.exports = { 
+  GetAllUsers,
+  GetAllRoot, 
+  GetAllAdmin, 
+  GetAllSys,
+  GetBasedOnRole,
   GetByCpf, 
   GetById, 
   GetByCpfOrEmail, 
@@ -292,4 +400,5 @@ module.exports = { GetAll,
   UserCpfExists,
   UserCpfOrEmailExists,
   UpdatePasswordByCpf,
+  UpdateById,
   InsertUser};
