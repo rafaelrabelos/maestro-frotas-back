@@ -1,4 +1,8 @@
 // Local
+@userteste_cpf =580.306.610-96
+@userteste_nome =tester
+@userteste_email =tester@gmail.com
+@userteste_senha =yanIx080)lK$c02
 @url =http://127.0.0.1:3333/api/v1
 
 // HML
@@ -7,22 +11,20 @@
 // Prod
 //@url =https://maestro-frotas-backend-my.herokuapp.com/api/v1
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXNjcmlwdGlvbiI6IkpXVCBUb2tlbiIsImlkIjoxLCJ0eXBlIjoiYWRtaW4iLCJ1c2VyIjp7ImlkIjoxLCJub21lIjoiUmFmYWVsIiwic29icmVub21lIjoiQS4gUmFiZWxvIiwiZW1haWwiOiJyYWZhZWxfcmFiZWxvQGxpdmUuY29tIiwiY3BmIjoiMDc5MTkwNDg2NTYiLCJkYXRhX25hc2NpbWVudG8iOiIxOTg1LTA1LTIwVDAzOjAwOjAwLjAwMFoiLCJyb2xlX25hbWUiOiJhZG0iLCJhY3RpdmVfcm9sZSI6MSwiaXNfcm9vdCI6MCwiaXNfc3lzIjowLCJpc191c2VyIjoxLCJpc19hZG0iOjEsInR5cGUiOiJhZG1pbiJ9LCJpYXQiOjE2MTgwMTU2ODEsImV4cCI6MTYxODAyMjA4MX0.hi6YdTS7q45CixLJLvUCKZl8C43wp5raIwu5N66Fq1w
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXNjcmlwdGlvbiI6IkpXVCBUb2tlbiIsImlkIjo1LCJ0eXBlIjoidXNlciIsInVzZXIiOnsiaWQiOjUsIm5vbWUiOiJ0ZXN0ZXIiLCJzb2JyZW5vbWUiOiIiLCJlbWFpbCI6Int7e3t1c2VydGVzdGVfZW1haWx9fSIsImNwZiI6IjU4MDMwNjYxMDk2IiwiZGF0YV9uYXNjaW1lbnRvIjpudWxsLCJyb2xlX25hbWUiOiJ1c2VyIiwiYWN0aXZlX3JvbGUiOjEsImlzX3Jvb3QiOjAsImlzX3N5cyI6MCwiaXNfdXNlciI6MSwiaXNfYWRtIjowLCJ0eXBlIjoidXNlciJ9LCJpYXQiOjE2MjEzOTAxNjIsImV4cCI6MTYyMTM5NjU2Mn0.PDGLCzQ8OxTny0w4aGmy-TOE1YnPW3saeyYitKM_Wvk
 
+// info
 GET {{url}}/
 content-type: application/json
 client_ip: 192.168.0.1
 ###
 
 // user/
-GET {{url}}/user
-content-type: application/json
-Authorization: Bearer {{token}}
-###
 GET {{url}}/user/todos
 content-type: application/json
 Authorization: Bearer {{token}}
 ###
+
 GET {{url}}/user/1
 content-type: application/json
 Authorization: Bearer {{token}}
@@ -31,48 +33,57 @@ Authorization: Bearer {{token}}
 POST {{url}}/user/register
 content-type: application/json
 Authorization: Bearer {{token}}
+client_ip: 192.168.0.1
 
 {
-    "nome": "Rafael",
-    "cpf": "968.513.190-20",
-    "email": "ra@gmail.com",
-    "senha": "123ad123"
+    "cpf": "{{userteste_cpf}}",
+    "nome": "{{userteste_nome}}",
+    "email": "{{userteste_email}}",
+    "senha": "{{userteste_senha}}"
 }
 ###
-PUT {{url}}/user/5fc28d6ce11978245992e085
+
+PUT {{url}}/user/5
 content-type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "nome": "Teste R&R UPDATED",
+    "nome": "{{userteste_nome}}",
     "sobrenome": "Tester",
     "data_nascimento": "1986-08-10"
 }
 ###
+
+DELETE {{url}}/user/1
+content-type: application/json
+Authorization: Bearer {{token}}
+###
+
+// self
+GET {{url}}/user
+content-type: application/json
+Authorization: Bearer {{token}}
+###
+
 PUT {{url}}/user
 content-type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "nome": "System",
+    "nome": "{{userteste_nome}}",
     "sobrenome": "Tester",
     "data_nascimento": "1986-08-10"
 }
 ###
-DELETE {{url}}/user/5fc28d6ce11978245992e085
-content-type: application/json
-Authorization: Bearer {{token}}
-###
 
-// login
+// auth
 POST  {{url}}/auth/login
 content-type: application/json
 client_ip: 192.168.0.1
 
 {
-    //"cpf": "{{adm_user}}",
-    "cpf": "07919048656",
-    "senha": "123adg666"
+    "cpf": "{{userteste_cpf}}",
+    "senha": "{{userteste_senha}}"
 }
 ###
 
@@ -81,7 +92,7 @@ content-type: application/json
 client_ip: 192.168.0.1
 
 {
-    "cpf": "07919048656"
+    "cpf": "{{userteste_cpf}}"
 }
 ###
 
@@ -90,8 +101,8 @@ content-type: application/json
 client_ip: 192.168.0.1
 
 {
-    "cpf": "079.19048656",
-    "code": "558189"
+    "cpf": "{{userteste_cpf}}",
+    "code": "870133"
 }
 ###
 
@@ -100,8 +111,8 @@ content-type: application/json
 client_ip: 192.168.0.1
 
 {
-    "cpf": "07919048656",
-    "code": "983347",
+    "cpf": "{{userteste_cpf}}",
+    "code": "870133",
     "pass": "123adg666"
 }
 ###
