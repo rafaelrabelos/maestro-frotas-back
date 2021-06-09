@@ -116,6 +116,7 @@ module.exports = {
   GetAdminUsers,
   GetRootUsers,
   GetSysUsers,
+  GetSysAdminUser,
   GetBasedOnRole,
   GetUserById, 
   CpfOrEmailExists, 
