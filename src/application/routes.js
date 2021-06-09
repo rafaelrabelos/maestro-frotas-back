@@ -55,13 +55,13 @@ routes.post("/user/register", (req, res) =>
   secure.secureRoute(req, res, { system: true }, UserController.createUser)
 );
 routes.put("/user", (req, res) =>
-  secure.secureRoute(req, res, null, UserController.updateUser)
+  secure.secureRoute(req, res, null, UserController.updateSelfUser)
 );
 routes.put("/user/:usuarioId", (req, res) =>
   secure.secureRoute(req, res, { owner: true }, UserController.updateUser)
 );
 routes.delete("/user/:usuarioId", (req, res) =>
-  secure.secureRoute(req, res, { system: true }, UserController.deleteUser)
+  secure.secureRoute(req, res, { system: true  }, UserController.deleteUser)
 );
 
 // Message

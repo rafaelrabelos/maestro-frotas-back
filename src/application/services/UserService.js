@@ -4,9 +4,35 @@ const UsuarioRepository = require("../../infra/database/repository/UserRepositor
 
 async function GetUsers(){
 
-  var users = await UsuarioRepository.GetAll();
+  var users = await UsuarioRepository.GetAllUsers();
 
-  if(users.erro) return { errorMessage: users.erro };
+  return ValidateManyUser(users);
+}
+
+async function GetAdminUsers(){
+
+  var users = await UsuarioRepository.GetAllAdmin();
+
+  return ValidateManyUser(users);
+}
+
+async function GetRootUsers(){
+
+  var users = await UsuarioRepository.GetAllRoot();
+
+  return ValidateManyUser(users);
+}
+
+async function GetSysUsers(){
+
+  var users = await UsuarioRepository.GetAllSys();
+
+  return ValidateManyUser(users);
+}
+
+async function GetBasedOnRole(roleName){
+
+  var users = await UsuarioRepository.GetBasedOnRole(roleName);
 
   return ValidateManyUser(users);
 }
@@ -59,6 +85,15 @@ async function GetUserWithRolesById(id){
   return(ValidateSingleUser(user));
 }
 
+async function UpdateUser(usuarioId, userData){
+
+  var user = await UsuarioRepository.UpdateById(usuarioId, userData);
+
+  return user.affectedRows === 1 ? GetUserWithRolesById(usuarioId) : user;
+
+}
+
+async function RemoveUser(usuarioId){ return []; }
 
 async function ValidateSingleUser(user){
   if(Array.isArray(user) && user.length == 1){
@@ -76,4 +111,17 @@ async function ValidateManyUser(users){
   return null;
 }
 
-module.exports = {GetUsers, GetUserById, GetSysAdminUser, CpfOrEmailExists, GetUserWithRolesById, CreateNewUser}
+module.exports = {
+  GetUsers,
+  GetAdminUsers,
+  GetRootUsers,
+  GetSysUsers,
+  GetSysAdminUser,
+  GetBasedOnRole,
+  GetUserById, 
+  CpfOrEmailExists, 
+  GetUserWithRolesById, 
+  CreateNewUser, 
+  UpdateUser,
+  RemoveUser
+};

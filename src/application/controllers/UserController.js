@@ -1,4 +1,3 @@
-const Model = require("../../infra/database/mongoRepository/usuario");
 const UserService = require("../services/UserService");
 const password_check = require("password-validator");
 const validaCpfCnpj = require("cpf-cnpj-validator");
@@ -17,23 +16,18 @@ async function createUser(req, res) {
   cpf = cpf.replace(/[^0-9]/g, '');
 
   try {
-    if(!validaCpfCnpj.cpf.isValid(cpf)){
-      return res
-        .status(400)
-        .send({ status: false, erros: ["CPF inválido"] });
+    if (!validaCpfCnpj.cpf.isValid(cpf)) {
+      return res.status(400).send({ status: false, erros: ["CPF inválido"] });
     }
 
     if (!nome || !email || !senha || !cpf) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          erros: [`Atributos obrigatorios: nome, email, senha e cpf.`],
-        });
+      return res.status(400).send({
+        status: false,
+        erros: [`Atributos obrigatorios: nome, email, senha e cpf.`],
+      });
     }
-    const ex = await UserService.CpfOrEmailExists(cpf, email);
 
-    if (await UserService.CpfOrEmailExists(cpf, email) ) {
+    if (await UserService.CpfOrEmailExists(cpf, email)) {
       return res
         .status(400)
         .send({ status: false, erros: ["Dados já existem no sistema"] });
@@ -52,9 +46,10 @@ async function createUser(req, res) {
 }
 
 async function getUsers(req, res) {
-  
   try {
-    const users = await UserService.GetUsers();
+    const meUser = await UserService.GetUserWithRolesById(req.decodedJWT.id);
+    let users = await UserService.GetBasedOnRole(meUser.role_name);
+
     return res.status(200).send({ status: true, data: users });
   } catch (error) {
     console.log(error);
@@ -64,7 +59,7 @@ async function getUsers(req, res) {
 
 async function getSelfUser(req, res) {
   try {
-    const users = await UserService.GetUserById(req.decodedJWT.id);
+    const users = await UserService.GetUserWithRolesById(req.decodedJWT.id);
 
     return res.status(200).send({ status: true, data: users });
   } catch (error) {
@@ -75,8 +70,9 @@ async function getSelfUser(req, res) {
 
 async function getUser(req, res) {
   try {
-    var user = await UserService.GetUserWithRolesById(req.params.usuarioId || req.decodedJWT.id);
-    const permissions = await selectPermissions(req);
+    var user = await UserService.GetUserWithRolesById(
+      req.params.usuarioId || req.decodedJWT.id
+    );
 
     return res.status(200).send({ status: true, data: user });
   } catch (error) {
@@ -85,22 +81,21 @@ async function getUser(req, res) {
   }
 }
 
-async function updateUser(req, res) {
+// refactor
+async function updateSelfUser(req, res) {
   const { nome, sobrenome, email } = req.body;
 
   try {
     if (!nome || !sobrenome || !email) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          erros: ["Ha campo(s) que devem ser informados!"],
-        });
+      return res.status(400).send({
+        status: false,
+        erros: ["Ha campo(s) que devem ser informados!"],
+      });
     }
 
     const usuarioId = req.params.usuarioId || req.decodedJWT.id;
 
-    const user = await Model.User.findById(usuarioId);
+    const user = await UserService.GetUserWithRolesById(usuarioId);
 
     if (!user) {
       return res
@@ -108,13 +103,13 @@ async function updateUser(req, res) {
         .send({ status: false, erros: ["Usuario nao localizado."] });
     }
 
-    const userUpdated = await Model.User.findByIdAndUpdate(
-      usuarioId,
-      { nome, sobrenome, email },
-      { new: true }
-    )
-      .select(`${await selectPermissions(req)}`)
-      .populate("criadoPor");
+    const userUpdated = await UserService.UpdateUser(usuarioId, {
+      nome,
+      sobrenome,
+      email,
+    });
+
+    console.log(userUpdated);
 
     return res.status(200).send({ status: true, data: userUpdated });
   } catch (error) {
@@ -123,6 +118,7 @@ async function updateUser(req, res) {
   }
 }
 
+// refactor
 async function deleteUser(req, res) {
   try {
     if (req.params.usuarioId.toString() === req.decodedJWT.id.toString()) {
@@ -139,7 +135,8 @@ async function deleteUser(req, res) {
       return res.status(400).send({ status: false, erros: [canDeleteResult] });
     }
 
-    const userDeleted = await Model.User.findByIdAndDelete(usuarioId);
+    // update to mysql
+    const userDeleted = await UserService.RemoveUser(usuarioId);
 
     return res.status(200).send({ status: true, data: userDeleted });
   } catch (error) {
@@ -149,32 +146,28 @@ async function deleteUser(req, res) {
 }
 
 async function userCanDelete(userToActId, userToDeleteId) {
-  const userToAct = await Model.User.findById(userToActId).select(
-    "+administrador +system_user +root"
-  );
 
-  const userToDelete = await Model.User.findById(userToDeleteId).select(
-    "+administrador +system_user +root"
-  );
+  const userToAct = await UserService.GetUserWithRolesById(userToActId);
+  const userToDelete = await UserService.GetUserWithRolesById(userToDeleteId);
 
   if (!userToAct || !userToDelete) {
     return "Usuario(s) nao localizado.";
   }
-  if (userToAct.administrador) {
+  if (userToAct.is_adm) {
     const res = !(
-      userToDelete.administrador ||
-      userToDelete.root ||
-      userToDelete.system_user
+      userToDelete.is_adm ||
+      userToDelete.is_root ||
+      userToDelete.is_sys
     );
     return res || "Administrador náo pode deletar o usuario.";
   } else if (userToAct.root) {
-    const res = !userToDelete.root;
+    const res = !userToDelete.is_root;
     return res || "root náo pode deletar o usuario root.";
-  } else if (userToAct.system_user) {
+  } else if (userToAct.is_sys) {
     const res = !(
-      userToDelete.system_user ||
-      userToDelete.root ||
-      userToDelete.administrador
+      userToDelete.is_sys ||
+      userToDelete.is_root ||
+      userToDelete.is_adm
     );
     return res || "Sistema sem privilegios para remover.";
   } else {
@@ -182,6 +175,7 @@ async function userCanDelete(userToActId, userToDeleteId) {
   }
 }
 
+// refactor
 async function selectPermissions(req) {
   const permissions = {
     root:
@@ -209,6 +203,6 @@ module.exports = {
   getUsers,
   getUser,
   getSelfUser,
-  updateUser,
+  updateSelfUser,
   deleteUser,
 };
