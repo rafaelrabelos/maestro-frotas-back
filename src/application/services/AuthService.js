@@ -15,11 +15,12 @@ async function AutheticateUser(cpf = "", pass = "", req) {
   }
 
   user = await UserRepository.GetWithRolesByCpf(cpf.replace(/[^0-9]/g, ''));
+
+  if(user.erro) return { errorMessage: user.erro };
+  
   user = await ValideLoginUser(user, pass, req);
 
-  if (typeof user === "string") {
-    return { errorMessage: user };
-  }
+  if (typeof user === "string") return { errorMessage: user };
 
   user.type = user.is_root
     ? "root"
@@ -42,7 +43,7 @@ async function ValideLoginUser(user = [], pass, req) {
 
   user = user[0];
   user.policies = (await PoliciesRepository.GetByUserIdAndIp(user.id, client_ip ))[0];
-  console.log(user)
+  
   if (user.policies && user.policies.is_blocked == 1) {
     return `Usuário temporariamente bloqueado`;
   }
@@ -85,8 +86,9 @@ async function SendRecoveryInfo(cpf = "") {
     } else{
       return { errorMessage: SendStatus.ErrorMessage };
     }
-  }
-  else{
+  }else if(userData.erro){
+    return { errorMessage: userData.erro };
+  }else{
     return { errorMessage: "erro ao gerar código" };
   }
   
@@ -95,6 +97,8 @@ async function SendRecoveryInfo(cpf = "") {
 async function GenerateRecoverCode(cpf) {
   
   userCode = await UserRepository.GetRecoverCodeByCpf(cpf);
+
+  if(userCode.erro) return userCode;
 
   if(Array.isArray(userCode) && userCode.length > 0){
     userCode = userCode[0];
@@ -105,6 +109,8 @@ async function GenerateRecoverCode(cpf) {
 
 async function ValidateRecoveryCode(cpf, code) {
   userCode = await UserRepository.GetRecoverCodeByCpf(cpf, false);
+
+  if(userCode.erro) return { errorMessage: userCode.erro };
 
   if(Array.isArray(userCode) && userCode.length > 0){
     userCode = userCode[0];
@@ -125,12 +131,17 @@ async function SetNewPassword(cpf, code, pass){
 
     user = await UserRepository.UpdatePasswordByCpf(cpf, pass);
 
+    if(user.erro) return { errorMessage: user.erro };
+
     if(user && user.affectedRows == 1){
       return { status: true, afected: user.affectedRows, info: user.info };
     }
+  }else if(validCode.errorMessage){
+    return validCode;
+  }else{
+    return { errorMessage: "Código não é válido." };
   }
-
-  return { errorMessage: "Código não é válido." };
+  
 }
 
 async function ValideLoginInputData(cpf, senha) {

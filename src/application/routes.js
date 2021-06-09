@@ -2,6 +2,7 @@ const express = require("express");
 const secure = require("../util/libs/secure");
 const AuthController = require("./controllers/AuthController");
 const UserController = require("./controllers/UserController");
+const MessageController = require("./controllers/MessageController");
 const os = require("os");
 
 const routes = express.Router();
@@ -63,5 +64,9 @@ routes.delete("/user/:usuarioId", (req, res) =>
   secure.secureRoute(req, res, { system: true  }, UserController.deleteUser)
 );
 
+// Message
+routes.post("/message/contactpage", (req, res) =>
+  secure.secureRoute(req, res, null, MessageController.SendContactPageMessage)
+);
 
 module.exports = routes;

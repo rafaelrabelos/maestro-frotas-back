@@ -22,16 +22,19 @@ client_ip: 192.168.0.1
 // user/
 GET {{url}}/user/todos
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 ###
 
 GET {{url}}/user/1
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 ###
 
 POST {{url}}/user/register
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 client_ip: 192.168.0.1
 
@@ -45,6 +48,7 @@ client_ip: 192.168.0.1
 
 PUT {{url}}/user/5
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 
 {
@@ -67,6 +71,7 @@ Authorization: Bearer {{token}}
 
 PUT {{url}}/user
 content-type: application/json
+client_ip: 192.168.0.1
 Authorization: Bearer {{token}}
 
 {
@@ -116,3 +121,17 @@ client_ip: 192.168.0.1
     "pass": "123adg666"
 }
 ###
+
+// Message
+
+POST  {{url}}/message/contactpage
+content-type: application/json
+client_ip: 192.168.0.1
+Authorization: Bearer {{token}}
+
+{
+    "name":"Rafael",
+    "email":"rafael@email.com",
+    "subject":"teste",
+    "message":"no message inside"
+}

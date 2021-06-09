@@ -6,8 +6,14 @@ const secure = require("../../util/libs/secure");
 async function createUser(req, res) {
   var { cpf, nome, email, senha } = req.body;
 
-  email = email.replace(/[^a-zA-Z0-9@-_.]/gi, "");
-  cpf = cpf.replace(/[^0-9]/g, "");
+  if(!cpf || !nome || !email || !senha){
+    return res
+        .status(400)
+        .send({ status: false, erros: ["Dados obrigatórios ausentes."] });
+  }
+
+  email = email.replace(/[^a-zA-Z0-9@-_.]/gi, '');
+  cpf = cpf.replace(/[^0-9]/g, '');
 
   try {
     if (!validaCpfCnpj.cpf.isValid(cpf)) {

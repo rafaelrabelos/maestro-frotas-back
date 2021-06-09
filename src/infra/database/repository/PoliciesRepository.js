@@ -14,7 +14,7 @@ async function GetByIp(ip) {
       p.user_ip,
       p.created_at,
       p.counter,
-      p.description 
+      CONCAT(p.description,' ', ${timeToBlock}-TIMESTAMPDIFF(MINUTE,p.created_at, NOW()), ' minuto(s) restante(s)') as description
     FROM users_policies p
     WHERE p.user_ip = '${ip}'
   `);
@@ -79,7 +79,7 @@ async function GetActiveSuspeciousTrying(ip, userId=null) {
     p.user_ip, 
     p.created_at, 
     p.counter, 
-    p.description
+    CONCAT(p.description,' ', ${timeToBlock}-TIMESTAMPDIFF(MINUTE,p.created_at, NOW()), ' minuto(s) restante(s)') as description
   FROM users_policies p
   WHERE 
     TIMESTAMPDIFF(MINUTE,p.created_at, NOW()) < ${timeToBlock}
@@ -101,7 +101,7 @@ async function UpdateSuspeciousTrying(ip, userId=null) {
     ),
     description = IF(
       up.counter > ${timeToBlock}, 
-      'Bloqueio @${ip} por ${timeToBlock} minutos',
+      'IP @${ip} em bloqueio de ${timeToBlock} minutos.',
       CONCAT('Tentativa de acesso suspeita para @${ip}, tentativa ', up.counter,' de ${timeToBlock}')
     ),
     up.created_at = NOW()

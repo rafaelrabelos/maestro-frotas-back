@@ -52,7 +52,6 @@ async function ValidateRecoveryCode(req, res) {
   const { cpf, code } = req.body;
   
   const recoverRes = await AuthService.ValidateRecoveryCode(cpf.replace(/[^0-9]/g, ''), code);
-  console.log(recoverRes)
 
   if (!recoverRes) {
     return res

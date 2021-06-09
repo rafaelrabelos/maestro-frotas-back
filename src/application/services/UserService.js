@@ -41,8 +41,20 @@ async function GetUserById(id){
 
   var user = await UsuarioRepository.GetById(id);
 
+  if(user.erro) return { errorMessage: user.erro };
+
   return(ValidateSingleUser(user));
 }
+
+async function GetSysAdminUser(){
+
+  var user = await UsuarioRepository.GetAdmin();
+
+  if(user.erro) return { errorMessage: user.erro };
+
+  return(ValidateSingleUser(user));
+}
+
 
 async function CpfOrEmailExists(cpf, email){
 
@@ -58,6 +70,8 @@ async function CreateNewUser({cpf, nome, email, senha, criadoPor}){
   
   const newUser = await UsuarioRepository.InsertUser({cpf, nome, email, senha, criadoPor});
 
+  if(newUser.erro) return { errorMessage: newUser.erro };
+
   return newUser;
 
 }
@@ -65,6 +79,9 @@ async function CreateNewUser({cpf, nome, email, senha, criadoPor}){
 async function GetUserWithRolesById(id){
 
   var user = await UsuarioRepository.GetWithRolesById(id);
+
+  if(user.erro) return { errorMessage: user.erro };
+
   return(ValidateSingleUser(user));
 }
 
